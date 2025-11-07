@@ -7,7 +7,6 @@ import { fetchProfile } from '@/lib/features/auth/authSlice'
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
 import { usePathname, useRouter } from 'next/navigation'
-import SmoothScroll from '@/components/SmoothScroll'
 
 function ClientGuard({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch()
