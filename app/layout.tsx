@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from "sonner";
-import ClientLayout from "./(client)/layout";
+import ClientLayout, { ClientGuard } from "./(client)/layout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +33,11 @@ export default function RootLayout({
         {/* <Navbar/> */}
         <StoreProvider>
           {/* <ClientLayout> */}
+        <ClientGuard>
 
           <Toaster position="bottom-right"/>
           {children}
+        </ClientGuard>
           {/* </ClientLayout> */}
         </StoreProvider>
         {/* <Footer/> */}

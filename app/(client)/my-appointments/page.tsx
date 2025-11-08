@@ -148,7 +148,7 @@ export default function AppointmentsPage() {
         {loading ? (
           <div className="text-center py-16 text-foreground/70">Loading appointments...</div>
         ) : filteredAppointments.length > 0 ? (
-          <div className="grid gap-2 md:grid-cols-3 lg:grid-cols-4 md:gap-4">
+          <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
             {filteredAppointments.map((appt) => (
               <AppointmentCard key={appt._id} appointment={appt} />
             ))}

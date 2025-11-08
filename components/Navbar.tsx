@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import Link from 'next/link';
 
-import { MenuIcon, XIcon } from 'lucide-react'; // Install with `npm i lucide-react`
+import { LogOut, MenuIcon, XIcon } from 'lucide-react'; // Install with `npm i lucide-react`
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { RootState } from '@/lib/store/store';
 import { Button } from './ui/button';
@@ -27,11 +27,28 @@ function Navbar() {
   }
 
   return (
-    <div className="w-full bg-background shadow px-6 py-4 sticky top-0 z-50 font-heading">
+    <div className="w-full bg-background px-6 py-4 sticky top-0 z-50 font-heading">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <div className="text-xl font-bold text-primary">
-          Schedulify
+              <div className="flex items-center gap-3">
+                <div className="bg-teal-100 rounded-full p-2 border border-teal-200">
+                  <span
+                    className="block h-6 w-6 rounded-full"
+                    style={{
+                      background: "conic-gradient(from 90deg, #2ABBB1, #5AA7D8, #2ABBB1)",
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-lg font-semibold tracking-wide text-primary">
+                    TruSukoon
+                  </span>
+                  <span className="text-xs font-normal text-muted">
+                    Your space for inner calm
+                  </span>
+                </div>
+              </div>
         </div>
 
         {/* Desktop Navigation */}
@@ -58,6 +75,11 @@ function Navbar() {
                 <NavigationMenuTrigger className='hover:bg-primary/40'>About</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[200px]">
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link href="/about-us">About Us</Link>
+                      </NavigationMenuLink>
+                    </li>
                     <li>
                       <NavigationMenuLink asChild>
                         <Link href="#">Contact Us</Link>
@@ -91,8 +113,8 @@ function Navbar() {
             </div>
           )
           : (
-            <Button onClick={handleLogOut}>
-              Logout
+            <Button onClick={handleLogOut} className='bg-transparent cursor-pointer text-primary hover:text-white'>
+              <LogOut className=' hover:text-white'/>
             </Button>
           )}
             

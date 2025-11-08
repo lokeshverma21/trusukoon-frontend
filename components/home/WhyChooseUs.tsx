@@ -11,7 +11,7 @@ const gridItems = [
 
 export default function WhyChooseUs() {
   return (
-    <div className="min-h-screen mt-20 px-6">
+    <div className="mt-20 px-6">
       <div className="text-center">
         <h3 className="text-5xl font-heading">Why Choose Us</h3>
         <p className="font-body py-4">We simplify booking for users and streamline growth for service providers.</p>
@@ -33,7 +33,7 @@ export default function WhyChooseUs() {
             ></div>
 
             {/* Overlay */}
-            <div className="absolute inset-0 bg-black/50 group-hover:bg-black/50 transition duration-300 flex items-end p-4">
+            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/50 transition duration-300 flex items-end p-4">
               {item.text && (
                 <div className="relative z-10 p-0 md:p-4">
                   <h3 className="text-white md:text-lg font-heading">{item.text}</h3>

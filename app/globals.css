@@ -3,6 +3,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* max-width: 64rem;
+  margin: auto; */
 }
 
 
