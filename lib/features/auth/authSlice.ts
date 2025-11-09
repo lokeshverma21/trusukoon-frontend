@@ -12,7 +12,7 @@ import { toast } from "sonner";
    @section  API Base
 =========================================================== */
 const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
+  process.env.NEXT_PUBLIC_API_BASE_URL;
 
 /* ===========================================================
    @section  Types
@@ -78,7 +78,7 @@ export const registerUser = createAsyncThunk<
   { rejectValue: string } // error
 >("auth/registerUser", async (formData, { rejectWithValue }) => {
   try {
-    const response = await axios.post<{ data: User }>(
+    const response = await api.post<{ data: User }>(
       `${API_URL}/user/register`,
       formData,
       { withCredentials: true }
@@ -102,15 +102,10 @@ export const loginUser = createAsyncThunk<
   { rejectValue: string }
 >("auth/loginUser", async (credentials, { rejectWithValue }) => {
   try {
-    const response = await axios.post<{ data: LoginResponse }>(
+    const response = await api.post<{ data: LoginResponse }>(
       `${API_URL}/user/login`,
       credentials,
-      { 
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-       }
+      {withCredentials: true}
     );
     toast.success("User logged In successfully!!")
     return response.data.data.user;
@@ -151,7 +146,7 @@ export const updateUser = createAsyncThunk<
 >("auth/updateUser", async (data, { rejectWithValue }) => {
   try {
     const { id, ...payload } = data;
-    const response = await axios.patch<{ data: User }>(
+    const response = await api.patch<{ data: User }>(
       `${API_URL}/user/${id}`,
       payload,
       { withCredentials: true }
@@ -212,7 +207,7 @@ export const logoutUser = createAsyncThunk<
   { rejectValue: string }
 >("auth/logoutUser", async (_, { rejectWithValue }) => {
   try {
-    await axios.post(
+    await api.post(
       `${API_URL}/user/logout`,
       {},
       { withCredentials: true }
