@@ -111,7 +111,7 @@ export const fetchAllStaffByService = createAsyncThunk<IStaff[], string, { rejec
   "staff/fetchAllStaffByService",
   async (serviceId, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${API_URL}?serviceId=${serviceId}`, { withCredentials: true });
+      const res = await api.get(`${API_URL}?serviceId=${serviceId}`, { withCredentials: true });
       console.log(res.data)
       return res.data.data as IStaff[];
     } catch (err) {
