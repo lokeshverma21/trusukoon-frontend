@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction, AnyAction, UnknownAction, isRejected } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 import { RootState } from "@/lib/store/store"; // adjust path as needed
+import api from "@/lib/axiosInstance";
 
 // ✅ Base API URL
 const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/staff`;
@@ -83,7 +84,7 @@ export const createStaff = createAsyncThunk<
   { rejectValue: string }
 >("staff/createStaff", async (data, { rejectWithValue }) => {
   try {
-    const res = await axios.post(`${API_URL}`, data, { withCredentials: true });
+    const res = await api.post(`${API_URL}`, data, { withCredentials: true });
     return res.data.data as IStaff;
   } catch (err) {
     const error = err as AxiosError<{ message: string }>;
@@ -142,7 +143,7 @@ export const updateStaff = createAsyncThunk<
   { rejectValue: string }
 >("staff/updateStaff", async ({ id, data }, { rejectWithValue }) => {
   try {
-    const res = await axios.patch(`${API_URL}/${id}`, data, { withCredentials: true });
+    const res = await api.patch(`${API_URL}/${id}`, data);
     return res.data.data as IStaff;
   } catch (err) {
     const error = err as AxiosError<{ message: string }>;
@@ -157,7 +158,7 @@ export const updateAvailability = createAsyncThunk<
   { rejectValue: string }
 >("staff/updateAvailability", async ({ id, availability }, { rejectWithValue }) => {
   try {
-    const res = await axios.patch(`${API_URL}/${id}/availability`, { availability }, { withCredentials: true });
+    const res = await api.patch(`${API_URL}/${id}/availability`, { availability });
     console.log(res.data)
     return res.data.data as IStaff;
   } catch (err) {
@@ -173,7 +174,7 @@ export const updateBreaks = createAsyncThunk<
   { rejectValue: string }
 >("staff/updateBreaks", async ({ id, breaks }, { rejectWithValue }) => {
   try {
-    const res = await axios.patch(`${API_URL}/${id}/breaks`, { breaks }, { withCredentials: true });
+    const res = await api.patch(`${API_URL}/${id}/breaks`, { breaks });
     return res.data.data as IStaff;
   } catch (err) {
     const error = err as AxiosError<{ message: string }>;
@@ -188,7 +189,7 @@ export const deleteStaff = createAsyncThunk<
   { rejectValue: string }
 >("staff/deleteStaff", async (id, { rejectWithValue }) => {
   try {
-    await axios.delete(`${API_URL}/${id}`, { withCredentials: true });
+    await api.delete(`${API_URL}/${id}`);
     return id;
   } catch (err) {
     const error = err as AxiosError<{ message: string }>;

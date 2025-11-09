@@ -1,3 +1,4 @@
+import api from "@/lib/axiosInstance";
 import { ApiErrorResponse } from "@/types";
 import {
   createAsyncThunk,
@@ -124,7 +125,7 @@ export const fetchProfile = createAsyncThunk<
   { rejectValue: string }
 >("auth/fetchProfile", async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.get<{ data: User }>(
+    const response = await api.get<{ data: User }>(
       `${API_URL}/user/me`,
       { withCredentials: true }
     );
@@ -166,7 +167,7 @@ export const getAllUsers = createAsyncThunk<
   { rejectValue: string }
 >("auth/getAllUsers", async (_, { rejectWithValue }) => {
   try {
-    const response = await axios.get<{ data: User[] }>(
+    const response = await api.get<{ data: User[] }>(
       `${API_URL}/user`,
       { withCredentials: true }
     );
@@ -186,7 +187,7 @@ export const deleteUser = createAsyncThunk<
   { rejectValue: string }
 >("auth/deleteUser", async (userId, { rejectWithValue }) => {
   try {
-    await axios.delete<{ data: User }>(
+    await api.delete<{ data: User }>(
       `${API_URL}/user/${userId}`,
       { withCredentials: true }
     );
