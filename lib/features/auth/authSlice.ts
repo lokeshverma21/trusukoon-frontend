@@ -11,8 +11,6 @@ import { toast } from "sonner";
 /* ===========================================================
    @section  API Base
 =========================================================== */
-const API_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL;
 
 /* ===========================================================
    @section  Types
@@ -79,7 +77,7 @@ export const registerUser = createAsyncThunk<
 >("auth/registerUser", async (formData, { rejectWithValue }) => {
   try {
     const response = await api.post<{ data: User }>(
-      `${API_URL}/user/register`,
+      `/user/register`,
       formData,
       { withCredentials: true }
     );
@@ -103,7 +101,7 @@ export const loginUser = createAsyncThunk<
 >("auth/loginUser", async (credentials, { rejectWithValue }) => {
   try {
     const response = await api.post<{ data: LoginResponse }>(
-      `${API_URL}/user/login`,
+      `/user/login`,
       credentials,
       {withCredentials: true}
     );
@@ -126,7 +124,7 @@ export const fetchProfile = createAsyncThunk<
 >("auth/fetchProfile", async (_, { rejectWithValue }) => {
   try {
     const response = await api.get<{ data: User }>(
-      `${API_URL}/user/me`,
+      `/user/me`,
       { withCredentials: true }
     );
     return response.data.data;
@@ -147,7 +145,7 @@ export const updateUser = createAsyncThunk<
   try {
     const { id, ...payload } = data;
     const response = await api.patch<{ data: User }>(
-      `${API_URL}/user/${id}`,
+      `/user/${id}`,
       payload,
       { withCredentials: true }
     );
@@ -168,7 +166,7 @@ export const getAllUsers = createAsyncThunk<
 >("auth/getAllUsers", async (_, { rejectWithValue }) => {
   try {
     const response = await api.get<{ data: User[] }>(
-      `${API_URL}/user`,
+      `/user`,
       { withCredentials: true }
     );
     return response.data.data;
@@ -188,7 +186,7 @@ export const deleteUser = createAsyncThunk<
 >("auth/deleteUser", async (userId, { rejectWithValue }) => {
   try {
     await api.delete<{ data: User }>(
-      `${API_URL}/user/${userId}`,
+      `/user/${userId}`,
       { withCredentials: true }
     );
     return userId;
@@ -208,7 +206,7 @@ export const logoutUser = createAsyncThunk<
 >("auth/logoutUser", async (_, { rejectWithValue }) => {
   try {
     await api.post(
-      `${API_URL}/user/logout`,
+      `/user/logout`,
       {},
       { withCredentials: true }
     );

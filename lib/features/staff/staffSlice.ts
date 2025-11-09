@@ -4,7 +4,7 @@ import { RootState } from "@/lib/store/store"; // adjust path as needed
 import api from "@/lib/axiosInstance";
 
 // ✅ Base API URL
-const API_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/staff`;
+const API_URL = `/staff`;
 
 // ===========================================================
 // 🧱 Types
