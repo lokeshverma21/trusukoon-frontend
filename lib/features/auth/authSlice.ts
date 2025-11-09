@@ -105,7 +105,12 @@ export const loginUser = createAsyncThunk<
     const response = await axios.post<{ data: LoginResponse }>(
       `${API_URL}/user/login`,
       credentials,
-      { withCredentials: true }
+      { 
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+       }
     );
     toast.success("User logged In successfully!!")
     return response.data.data.user;

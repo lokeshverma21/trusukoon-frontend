@@ -97,7 +97,7 @@ export const fetchAllStaff = createAsyncThunk<IStaff[], void, { rejectValue: str
   "staff/fetchAllStaff",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${API_URL}`, { withCredentials: true });
+      const res = await api.get(`/staff`, { withCredentials: true });
       return res.data.data as IStaff[];
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
@@ -127,7 +127,7 @@ export const fetchStaffById = createAsyncThunk<IStaff, string, { rejectValue: st
   "staff/fetchStaffById",
   async (id, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`${API_URL}/${id}`, { withCredentials: true });
+      const res = await api.get(`${API_URL}/${id}`, { withCredentials: true });
       return res.data.data as IStaff;
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
