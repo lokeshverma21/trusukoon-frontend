@@ -12,15 +12,6 @@ const nextConfig: NextConfig = {
     ],
     // domains: ['images.unsplash.com'], // Add the Unsplash domain here
   },
-  async rewrites() {
-    return [
-      {
-        source: "/api/:path*",
-        destination:
-          "https://trusukoon-backend-pvt.vercel.app/api/:path*", // your backend
-      },
-    ];
-  },
 };
 
 export default nextConfig;
