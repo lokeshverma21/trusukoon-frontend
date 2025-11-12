@@ -141,7 +141,7 @@ const AddServiceModal: React.FC = () => {
                 name="duration"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Duration (hours)</FormLabel>
+                    <FormLabel>Duration (mins)</FormLabel>
                     <FormControl>
                       <Input
                         type="number"

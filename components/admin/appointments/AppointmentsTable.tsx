@@ -13,6 +13,9 @@ import { CircleX, NotebookPen, Plus, Trash } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import EditAppointmentModal from "./EditAppointmentModal";
+import { debounce } from "lodash";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const AppointmentsTable = () => {
   const dispatch = useAppDispatch();
@@ -21,11 +24,29 @@ const AppointmentsTable = () => {
   const [selectedAction, setSelectedAction] = useState<"cancel" | "delete" | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  // Fetch all appointments on mount
-  useEffect(() => {
-    dispatch(fetchAppointments());
-  }, [dispatch]);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState<string>("");
+  const [paymentStatus, setPaymentStatus] = useState<string>("");
 
+  // Debounced fetch (so typing doesn’t refetch instantly)
+  const debouncedFetch = React.useMemo(
+    () =>
+      debounce((query: string, stat: string, pay: string) => {
+        dispatch(fetchAppointments({
+          search: query || undefined,
+          status: stat === 'all' ? undefined: stat,
+          paymentStatus: pay === 'all' ? undefined: pay,
+        }));
+      }, 400),
+    [dispatch]
+  );
+
+  useEffect(() => {
+    debouncedFetch(search, status, paymentStatus);
+    return () => debouncedFetch.cancel();
+  }, [search, status, paymentStatus, debouncedFetch]);
+
+  
   const handleConfirm = () => {
     if (!selectedId || !selectedAction) return;
     if (selectedAction === "cancel") dispatch(cancelAppointment(selectedId));
@@ -34,31 +55,59 @@ const AppointmentsTable = () => {
     setSelectedAction(null);
     setSelectedId(null);
   };
+  
+  // Fetch all appointments on mount
+  useEffect(() => {
+    dispatch(fetchAppointments());
+  }, [dispatch]);
 
   return (
     <div className="mt-6">
-      <div className="rounded-lg border border-border bg-card text-card-foreground shadow-sm min-w-full w-sm">
+      <div className="rounded-md border border-border bg-card text-card-foreground shadow-sm min-w-full w-sm">
         {/* Header Buttons */}
         <div className="flex flex-wrap justify-between items-center gap-2 p-4">
-          <Button>
-            <Plus size={16} /> Add Appointment
-          </Button>
+          <div className="flex gap-2 items-center flex-wrap">
+            <Input
+              type="text"
+              placeholder="Search by patient, staff, or service..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-64"
+            />
 
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="btn text-lg font-medium bg-primary text-primary-foreground hover:opacity-90"
-            >
-              <i className="mgc_settings_3_line"></i>
-            </button>
-            <Button
-              type="button"
-              className="text-sm font-medium bg-muted text-foreground hover:opacity-80"
-            >
-              Export
+            <Select onValueChange={setStatus} value={status}>
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="Filter by Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="confirmed">Confirmed</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select onValueChange={setPaymentStatus} value={paymentStatus}>
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="Payment Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="unpaid">Unpaid</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex gap-2">
+            <Button>
+              <Plus size={16} /> Add Appointment
             </Button>
+            <Button variant="secondary">Export</Button>
           </div>
         </div>
+
 
         {/* Table */}
         <div className="relative overflow-x-auto">

@@ -43,3 +43,9 @@ export interface AppointmentUpdatePayload {
   status?: AppointmentStatus;
   paymentStatus?: PaymentStatus;
 }
+
+export interface FetchAppointmentsParams {
+  search?: string;
+  status?: string;
+  paymentStatus?: string;
+}

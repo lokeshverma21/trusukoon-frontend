@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import api from "@/lib/axiosInstance";
 import type { AxiosError } from "axios";
-import { Appointment, AppointmentPayload, AppointmentUpdatePayload } from "@/types/appointment.types";
+import { Appointment, AppointmentPayload, AppointmentUpdatePayload, FetchAppointmentsParams } from "@/types/appointment.types";
 
 // ==============================
 // Types
@@ -47,11 +47,11 @@ const getErrorMessage = (error: unknown): string => {
 // Get all appointments
 export const fetchAppointments = createAsyncThunk<
   Appointment[],
-  void,
+  FetchAppointmentsParams | void,
   { rejectValue: string }
->("appointment/fetchAll", async (_, { rejectWithValue }) => {
+>("appointment/fetchAll", async (params, { rejectWithValue }) => {
   try {
-    const response = await api.get("/appointment");
+    const response = await api.get("/appointment", { params });
     return response.data.data;
   } catch (error) {
     return rejectWithValue(getErrorMessage(error));

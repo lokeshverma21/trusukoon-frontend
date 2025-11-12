@@ -58,7 +58,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({summary}) => {
     },
     {
       title: "Total Revenue",
-      value: `	7${summary.totalRevenue}`,
+      value: `${summary.totalRevenue}`,
       icon: IndianRupee,
       gradient: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-50",

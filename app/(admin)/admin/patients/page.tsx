@@ -1,20 +1,20 @@
 import PageBreadcrumb from '@/components/admin/PageBreadcrumb'
-import ReportsPage from '@/components/admin/reports/ReportsPage'
+import PatientsListPage from '@/components/admin/patient/PatientsListPage'
 import React from 'react'
 
 function page() {
   return (
-    <div>
+    <>
       <PageBreadcrumb
-        title="Reports & Insights"
-        name="Reports & Insights"
+        title="Patients"
+        name="Patients"
         breadCrumbItems={[
           { label: "Home", href: "/" },
           { label: "Admin", href: "/admin" },
-          { label: "Reports" },
+          { label: "Patients" },
       ]}/>
-      <ReportsPage/>
-    </div>
+      <PatientsListPage/>
+    </>
   )
 }
 

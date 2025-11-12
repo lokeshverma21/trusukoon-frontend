@@ -30,6 +30,7 @@ import servicesReducer from "@/lib/features/service/serviceSlice";
 import appointmentReducer from "@/lib/features/appointment/appointmentSlice";
 import adminStatsReducer from "@/lib/features/adminStats/adminStatsSlice";
 import appointmentFlowReducer from "@/lib/features/appointment/appointmentFlowSlice";
+import patientsReducer from "@/lib/features/patient/patientSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -37,7 +38,8 @@ const rootReducer = combineReducers({
   services: servicesReducer,
   appointment: appointmentReducer,
   adminStats: adminStatsReducer,
-  appointmentFlow: appointmentFlowReducer
+  appointmentFlow: appointmentFlowReducer,
+  patients: patientsReducer
 });
 
 const persistConfig = {
