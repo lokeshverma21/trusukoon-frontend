@@ -37,6 +37,7 @@ export function NavUser({
     email: string
     avatar: string
   }
+  collapsed?: boolean
 }) {
   const { isMobile } = useSidebar()
 

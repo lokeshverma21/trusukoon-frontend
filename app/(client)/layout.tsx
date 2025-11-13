@@ -23,7 +23,7 @@ export function ClientGuard({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!user && pathname.startsWith("/admin")) {
       router.push("/login")
-    } else if (user && pathname === "/login") {
+    } else if (user && pathname === "/login" || user && pathname === "/signup") {
       router.push("/")
     }
   }, [user, pathname, router])

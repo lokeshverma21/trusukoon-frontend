@@ -14,12 +14,14 @@ import Link from "next/link"
 
 export function NavMain({
   items,
+  collapsed = false
 }: {
   items: {
     title: string
     url: string
     icon?: Icon
   }[]
+  collapsed?: boolean
 }) {
   return (
     <SidebarGroup>
@@ -49,7 +51,7 @@ export function NavMain({
               <SidebarMenuButton tooltip={item.title} asChild>
                 <Link href={`${item.url}`}>
                     {item.icon && <item.icon />}
-                    <span>{item.title}</span>
+                    {!collapsed && <span>{item.title}</span>}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
