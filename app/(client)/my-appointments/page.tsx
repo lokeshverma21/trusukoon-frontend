@@ -9,6 +9,7 @@ import "react-day-picker/dist/style.css";
 import { CustomSelect } from "@/components/my-appointments/CustomSelect";
 import { AppointmentCard } from "@/components/my-appointments/AppointmentCard";
 import { statusColors } from "@/components/my-appointments/StatusBadge";
+import NotLoggedInPage from "@/components/my-appointments/NotLoggedInPage";
 
 export default function AppointmentsPage() {
   const dispatch = useAppDispatch();
@@ -64,12 +65,21 @@ export default function AppointmentsPage() {
     ).values()
   );
 
+
+  if (!user) {
+    return(
+      <div className="min-w-5xl w-full min-h-90 flex items-center justify-center">
+        <NotLoggedInPage/>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-background min-h-screen font-body text-foreground">
-      <main className="container mx-auto px-4 py-8 md:py-4">
+      <main className="container mx-auto px-0 py-8 md:py-4">
         <header className="mb-8 flex flex-col md:flex-row justify-between items-center">
-          <h1 className="text-2xl font-bold text-headings font-heading">My Appointments</h1>
-          <p className="text-lg text-muted/80 mt-2">View and manage your upcoming and past appointments.</p>
+          <h1 className="text-xl font-bold text-headings font-heading">My Appointments</h1>
+          <p className="text-sm text-muted/80 mt-2">View and manage your upcoming and past appointments.</p>
         </header>
 
         {/* Filters */}

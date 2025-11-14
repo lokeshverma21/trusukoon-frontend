@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <>
-      <div className="max-w-5xl mx-auto bg-background flex flex-col items-center justify-evenly md:flex-row px-6 gap-6">
+      <div className="max-w-5xl mx-auto bg-background flex flex-col items-center justify-evenly md:flex-row px-0 gap-6">
         <div className="flex flex-wrap flex-col w-fit gap-4 py-6">
             <p className="text-xs uppercase tracking-[0.25em] text-accent mb-4">
                   A gentle step towards healing

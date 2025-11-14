@@ -19,13 +19,13 @@ const AboutPage: NextPage = () => {
   };
 
   return (
-    <main className="min-h-screen bg-background text-slate-900 scroll-smooth">
+    <main className="min-h bg-background text-slate-900 scroll-smooth">
       {/* Page Wrapper */}
-      <div className="mx-auto flex max-w-5xl flex-col gap-16 px-4 py-10 md:px-8 md:py-16">
+      <div className="mx-auto flex max-w-5xl flex-col gap-16 px-4 py-10 md:px-0 md:py-6">
         {/* Hero Section */}
         <section
           aria-labelledby="about-hero-heading"
-          className={`overflow-hidden rounded-2xl bg-gradient-to-br from-primary/5 via-secondary/5 to-background p-8 shadow-md md:p-12 ${
+          className={`overflow-hidden rounded-2xl bg-linear-to-br from-primary/5 via-secondary/5 to-background p-8 shadow-md md:p-12 ${
             hasMounted ? "animate-fadeIn" : ""
           }`}
         >
@@ -62,7 +62,7 @@ const AboutPage: NextPage = () => {
             <div className="mt-6 flex flex-1 justify-center md:mt-0">
               <div className="relative flex items-center justify-center rounded-2xl bg-white p-4 shadow-lg">
                 {/* Decorative aura behind illustration */}
-                <div className="absolute inset-0 -z-10 rounded-2xl bg-gradient-to-br from-primary/10 via-secondary/10 to-background" />
+                <div className="absolute inset-0 -z-10 rounded-2xl bg-linear-to-br from-primary/10 via-secondary/10 to-background" />
                 <div className="flex flex-col items-center gap-3">
                   <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                     Calm mind, one session at a time

@@ -169,8 +169,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
               <a href="#">
-                <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                {/* <IconInnerShadowTop className="size-5!" /> */}
+                <span className="text-base font-semibold flex items-center gap-3">
+                    <div className="bg-teal-100 rounded-full p-2 border border-teal-200">
+                          <span
+                            className="block h-4 w-4 rounded-full"
+                            style={{
+                              background: "conic-gradient(from 90deg, #2ABBB1, #5AA7D8, #2ABBB1)",
+                            }}
+                          />
+                    </div>
+                    <div className="flex flex-col">
+                          <span className="text-sm font-semibold tracking-wide text-primary">
+                            TruSukoon
+                          </span>
+                    </div>
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

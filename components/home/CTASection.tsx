@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const CTASection = () => {
   return (
-    <div className="relative bg-accent py-16 px-6 mt-10 mb-16 mx-4 md:mx-10 rounded-md">
+    <div className="relative bg-accent py-16 px-6 mt-10 mb-16 mx-4 rounded-md">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0">
         {/* Right Content (Text) */}
         <div className="text-center md:text-left md:w-1/2">

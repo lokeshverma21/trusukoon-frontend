@@ -14,7 +14,7 @@ import Link from "next/link";
 
 export default function HowItWorks() {
   return (
-    <div className="mt-14 md:mt-6 min-h-full px-10">
+    <div className="mt-14 md:mt-6 min-h-full px-0">
       <h3 className="text-center text-5xl">
         How it works
       </h3>
@@ -30,7 +30,7 @@ export default function HowItWorks() {
                   Discover
                 </CardTitle>
                 <CardDescription className="text-muted-foreground">
-                  Find nearby or your favorite salons, spas, trainers, therapists, and more — all in one place.
+                  Find nearby or your favorite trainers, therapists, and more — all in one place.
                 </CardDescription>
               </CardHeader>
             </Card>

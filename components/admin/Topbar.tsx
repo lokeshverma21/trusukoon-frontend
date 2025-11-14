@@ -39,13 +39,27 @@ export default function Topbar() {
               {/* Logo & desktop menu */}
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex shrink-0 items-center">
-                  <Image
-                    width={10}
-                    height={10}
-                    src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=green&shade=500"
-                    alt="Your Company"
-                    className="h-8 w-auto"
-                  />
+                  <div className="text-xl font-bold text-primary">
+                    {/* logo */}
+                    <div className="flex items-center gap-3">
+                        <div className="bg-teal-100 rounded-full p-2 border border-teal-200">
+                          <span
+                            className="block h-4 w-4 rounded-full"
+                            style={{
+                              background: "conic-gradient(from 90deg, #2ABBB1, #5AA7D8, #2ABBB1)",
+                            }}
+                          />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold tracking-wide text-primary">
+                            TruSukoon
+                          </span>
+                          <span className="hidden md:block text-xs font-normal text-muted">
+                            Your space for inner calm
+                          </span>
+                        </div>
+                      </div>
+                </div>
                 </div>
               </div>
 

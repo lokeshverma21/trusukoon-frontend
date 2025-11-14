@@ -52,13 +52,29 @@ function Navbar() {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-0">
           <NavigationMenu>
-            <NavigationMenuList className="flex space-x-4">
+            <NavigationMenuList className="flex space-x-0">
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className="text-sm font-medium transition-colors">
                   <Link href={'/'}>
                     Home
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild className="text-sm font-medium transition-colors">
+                  <Link href={'/about-us'}>
+                    About
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild className="text-sm font-medium transition-colors">
+                  <Link href={'/contact-us'}>
+                    Contact Us
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -71,7 +87,7 @@ function Navbar() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              <NavigationMenuItem>
+              {/* <NavigationMenuItem>
                 <NavigationMenuTrigger className='hover:bg-primary/40'>About</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[200px]">
@@ -87,7 +103,7 @@ function Navbar() {
                     </li>
                   </ul>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className="text-sm font-medium transition-colors">
