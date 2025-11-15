@@ -11,7 +11,7 @@ const gridItems = [
 
 export default function WhyChooseUs() {
   return (
-    <div className="mt-20">
+    <div className="mt-20 px-4">
       <div className="text-center">
         <h3 className="text-5xl font-heading">Why Choose Us</h3>
         <p className="font-body py-4">We simplify booking for users and streamline growth for service providers.</p>

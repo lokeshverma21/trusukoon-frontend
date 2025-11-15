@@ -35,6 +35,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useAppSelector } from "@/lib/store/hooks"
+import { RootState } from "@/lib/store/store"
 
 const data = {
   user: {
@@ -159,6 +161,8 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useAppSelector((state: RootState) => state.auth.user);
+
   return (
     <Sidebar collapsible="offcanvas" {...props} className="border bg-white">
       <SidebarHeader>
@@ -196,7 +200,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )

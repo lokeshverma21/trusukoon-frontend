@@ -27,6 +27,7 @@ import ServiceInsightsChart from "@/components/admin/dashboard/ServiceInsightsCh
 import OperationalSnapshot from "@/components/admin/dashboard/OperationalSnapshot";
 import PageBreadcrumb from "@/components/admin/PageBreadcrumb";
 import withRoleGuard from "@/lib/withRoleGuard";
+import Loader from "@/components/Loader";
 
 const AdminDashboardPage = () => {
   const dispatch = useAppDispatch();
@@ -59,8 +60,8 @@ const AdminDashboardPage = () => {
 
   if (isLoadingAll) {
     return (
-      <div className="flex justify-center items-center h-[80vh] text-muted-foreground">
-        <Loader2 className="animate-spin w-6 h-6 mr-2" /> Loading dashboard...
+      <div className="flex flex-col gap-2 justify-center items-center h-[80vh] text-muted-foreground">
+        <Loader /> Loading dashboard...
       </div>
     );
   }

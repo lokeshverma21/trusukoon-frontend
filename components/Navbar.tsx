@@ -129,9 +129,19 @@ function Navbar() {
             </div>
           )
           : (
-            <Button onClick={handleLogOut} className='bg-transparent cursor-pointer text-primary hover:text-white'>
-              <LogOut className=' hover:text-white'/>
-            </Button>
+            <div className='flex items-center justify-center gap-2'>
+              {user.role === "admin" || user.role === "staff" ? (
+                <Link href={'/admin'} className='bg-transparent hover:bg-accent/10 p-2 rounded-md hover:text-accent cursor-pointer text-primary'>
+                  Dashboard
+                </Link>
+              ): (
+                null
+              )}
+
+              <Button onClick={handleLogOut} className='bg-transparent cursor-pointer text-primary hover:text-white'>
+                <LogOut className=' hover:text-white'/>
+              </Button>
+            </div>
           )}
             
           </div>
@@ -156,21 +166,43 @@ function Navbar() {
 
         <div className="flex flex-col p-4 space-y-4">
             <Link href={'/'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-            <Link href={'/book-appointment'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>New Appointment</Link>
-            <Link href="#" className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Recurring Booking</Link>
-            <Link href="#" className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Consultation</Link>
-            <Link href="#" className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Therapy</Link>
-            <Link href="#" className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Check-ups</Link>
+            <Link href={'/book-appointment'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Book Appointment</Link>
+            <Link href={'/about-us'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+            <Link href={'/contact-us'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link>
             <Link href={'/my-appointments'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>My Appointments</Link>
+            {/* <Link href="#" className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Recurring Booking</Link> */}
+            {/* <Link href="#" className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Consultation</Link> */}
         </div>
 
         <div className="mt-auto p-4 border-t">
-            <button className="w-full mb-2 text-sm px-4 py-2 border border-primary rounded-md text-primary hover:bg-primary hover:text-white transition">
-            Login
-            </button>
-            <button className="w-full text-sm px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition">
-            Get Started
-            </button>
+          {user === null ? (
+            <div>
+              <Link href={'/login'}>
+                <button className="w-full mb-2 text-sm px-4 py-2 border border-primary rounded-md text-primary hover:bg-primary hover:text-white transition">
+                  Login
+                </button>
+              </Link>
+              <Link href={'/signup'}>
+                <button className="w-full text-sm px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition">
+                  Get Started
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <div className='flex flex-col items-center justify-center gap-2'>
+              {user.role === "admin" || user.role === "staff" ? (
+                <Link href={'/admin'} className='bg-transparent border  w-full text-center border-primary hover:bg-accent/10 p-2 rounded-md hover:text-accent cursor-pointer text-primary'>
+                  Dashboard
+                </Link>
+              ): (
+                null
+              )}
+
+              <Button onClick={handleLogOut} className='bg-primary text-white border border-accent w-full cursor-pointer hover:text-white'>
+                Logout <LogOut className=' hover:text-white'/>
+              </Button>
+            </div>
+          )}
         </div>
         </div>
 

@@ -24,6 +24,7 @@ import { ApexOptions } from "apexcharts";
 import SummaryCard from "./SummaryCards";
 import InsightCard from "./InsightCard";
 import Metric from "./Metric";
+import Loader from "@/components/Loader";
 
 // Lazy load ApexCharts to prevent SSR errors
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -145,8 +146,8 @@ export default function ReportsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      <div className="flex flex-col gap-2 justify-center items-center h-[80vh] text-muted-foreground">
+        <Loader /> Loading reports...
       </div>
     );
   }

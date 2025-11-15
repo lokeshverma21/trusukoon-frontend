@@ -10,6 +10,7 @@ import { CustomSelect } from "@/components/my-appointments/CustomSelect";
 import { AppointmentCard } from "@/components/my-appointments/AppointmentCard";
 import { statusColors } from "@/components/my-appointments/StatusBadge";
 import NotLoggedInPage from "@/components/my-appointments/NotLoggedInPage";
+import Loader from "@/components/Loader";
 
 export default function AppointmentsPage() {
   const dispatch = useAppDispatch();
@@ -156,7 +157,9 @@ export default function AppointmentsPage() {
 
         {/* Appointment List */}
         {loading ? (
-          <div className="text-center py-16 text-foreground/70">Loading appointments...</div>
+          <div className="flex flex-col gap-2 justify-center items-center h-[80vh] text-muted-foreground">
+            <Loader /> Loading your appointments...
+          </div>
         ) : filteredAppointments.length > 0 ? (
           <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
             {filteredAppointments.map((appt) => (

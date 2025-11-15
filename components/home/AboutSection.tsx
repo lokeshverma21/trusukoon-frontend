@@ -4,7 +4,7 @@ import React from 'react'
 function AboutSection() {
   return (
     <div>          
-        <section className="py-10 sm:py-14">
+        <section className="py-6 sm:pt-12">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="bg-white/80 backdrop-blur rounded-xl md:rounded-2xl shadow-sm shadow-teal-100 border border-teal-50 p-6 sm:p-8">
                 <div className="grid md:grid-cols-2 gap-8 items-center">

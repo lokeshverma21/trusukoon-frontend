@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <>
-      <div className="max-w-5xl mx-auto bg-background flex flex-col items-center justify-evenly md:flex-row px-0 gap-6">
+      <div className="max-w-5xl mx-4 sm:mx-auto bg-background flex flex-col items-center justify-evenly md:flex-row px-0 gap-6">
         <div className="flex flex-wrap flex-col w-fit gap-4 py-6">
             <p className="text-xs uppercase tracking-[0.25em] text-accent mb-4">
                   A gentle step towards healing
@@ -36,7 +36,7 @@ export default function Hero() {
                 with warmth, respect, and complete confidentiality.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4 text-xs text-slate-500">
+          <div className="flex flex-row sm:flex-row  items-center gap-4 text-xs text-slate-500">
                 <div className="flex items-center gap-2">
                   <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
                   <span>Verified, licensed therapists</span>
@@ -47,7 +47,7 @@ export default function Hero() {
                 </div>
           </div>
           
-          <div className="flex flex-col md:flex-row items-center justify-start gap-6">
+          <div className="flex md:flex-row items-center justify-start gap-6">
             <Link href={"/book-appointment"}>
               <Button className="bg-primary shadow-2xl font-heading w-fit py-4 px-6 text-white rounded-full cursor-pointer">
                 Book An Appointment

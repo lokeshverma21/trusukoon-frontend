@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"; // make sure you have typed hooks
 import { fetchPatientsList, selectPatients } from "@/lib/features/patient/patientSlice";
 import Link from "next/link";
+import Loader from "@/components/Loader";
 
 export default function PatientsListPage() {
   const dispatch = useAppDispatch();
@@ -35,12 +36,9 @@ export default function PatientsListPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-foreground">Loading patients...</p>
-        </div>
-      </div>
+          <div className="flex flex-col gap-2 justify-center items-center h-[80vh] text-muted-foreground">
+            <Loader /> Loading patients...
+          </div>
     );
   }
 

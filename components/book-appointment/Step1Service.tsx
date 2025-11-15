@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { AppDispatch } from "@/lib/store/store";
 import { Service } from "@/types/service.types";
+import Loader from "../Loader";
 
 // ===========================================================
 // 🧱 Types
@@ -74,7 +75,11 @@ export default function Step1Service({ services, onSelect, loading }: Props) {
   // 🌀 Loading UI
   // ===========================================================
   if (loading) {
-    return <p className="text-center text-gray-500">Loading services...</p>;
+    return (
+      <div className="flex flex-col gap-2 justify-center items-center h-[80vh] text-muted-foreground">
+        <Loader /> Loading services...
+      </div>
+    );
   }
 
   // ===========================================================

@@ -8,6 +8,9 @@ import MaximizeScreen from "./MaximizeScreen"
 import { SidebarTrigger } from "../ui/sidebar"
 import { Button } from "../ui/button"
 import { IconMenu2 } from "@tabler/icons-react"
+import { RootState } from "@/lib/store/store"
+import { useAppSelector } from "@/lib/store/hooks"
+import { Avatar, AvatarFallback } from "../ui/avatar"
 
 // const navigation = [
 //   // { name: "Dashboard", href: "#", current: true },
@@ -18,6 +21,8 @@ function classNames(...classes: (string | undefined | boolean)[]) {
 }
 
 export default function Topbar() {
+  const user = useAppSelector((state: RootState) => state.auth.user);
+
   return (
     <Disclosure
       as="nav"
@@ -80,16 +85,27 @@ export default function Topbar() {
                 <Menu as="div" className="relative ml-3">
                   <Menu.Button className="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
                     <span className="sr-only">Open user menu</span>
-                    <Image
-                        width={10}
-                        height={10}
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                      className="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
-                    />
+
+                    {user?.name === null ? (
+                      <div>
+                        <Image
+                            width={10}
+                            height={10}
+                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          alt=""
+                          className="size-8 rounded-full bg-gray-800 outline -outline-offset-1 outline-white/10"
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <Avatar>
+                          <AvatarFallback className="text-white bg-accent uppercase">{user?.name.slice(0,2)}</AvatarFallback>
+                        </Avatar>
+                      </div>
+                    )}
                   </Menu.Button>
 
-                  <Menu.Items
+                  {/* <Menu.Items
                     as="div"
                     className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-black/5 dark:bg-gray-800 dark:shadow-none dark:outline-white/10"
                   >
@@ -110,7 +126,7 @@ export default function Topbar() {
                         )}
                       </Menu.Item>
                     ))}
-                  </Menu.Items>
+                  </Menu.Items> */}
                 </Menu>
               </div>
             </div>
