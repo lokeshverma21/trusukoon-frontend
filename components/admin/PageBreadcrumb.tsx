@@ -2,7 +2,7 @@
 
 import Head from "next/head";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 
 import {
@@ -30,11 +30,16 @@ const PageBreadcrumb = ({
   children,
   breadCrumbItems = [],
 }: PageBreadcrumbProps) => {
+
+  useEffect(() => {
+  if (title) document.title = `${title} - TruSukoon`;
+}, [title]);
+
   return (
     <>
-      <Head>
+      {/* <Head>
         <title>{title}</title>
-      </Head>
+      </Head> */}
 
       {name && (
         <div className="flex justify-between items-center mb-6">

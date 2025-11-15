@@ -12,12 +12,6 @@ import WhyChooseUs from "@/components/home/WhyChooseUs";
 export default function Home() {
   return (
     <>
-      <div>
-        <title>Premium Wellness</title>
-        <meta name="description" content="Destination for relief and wellness." />
-        <link rel="icon" href="/favicon.ico" />
-      </div>
-
       <Hero/>
       <AboutSection/>
       <ServicesSection/>
