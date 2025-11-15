@@ -83,6 +83,7 @@ import { CalendarDays, CheckCircle2, Clock, ListChecks, UserRoundCheck, ArrowRig
 import { cva, type VariantProps } from 'class-variance-authority';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import Link from 'next/link';
 
 // Helper function for merging Tailwind CSS classes
 function cn(...inputs: ClassValue[]) {
@@ -252,10 +253,12 @@ const HowItWorksPage: NextPage = () => {
           <p className="mt-2 max-w-xl text-muted-foreground">
             Take the first step towards a more balanced life. Our therapists are here to support you.
           </p>
-          <Button size="lg" className="mt-8 group">
-            Start Booking
-            <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-          </Button>
+          <Link href={'/book-appointment'}>
+            <Button size="lg" className="mt-8 group">
+              Start Booking
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </div>
       </div>
     </div>

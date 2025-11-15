@@ -36,7 +36,7 @@ export default function Hero() {
                 with warmth, respect, and complete confidentiality.
           </p>
 
-          <div className="flex flex-row sm:flex-row  items-center gap-4 text-xs text-slate-500">
+          <div className="flex flex-col sm:flex-row items-center gap-4 text-xs text-slate-500">
                 <div className="flex items-center gap-2">
                   <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
                   <span>Verified, licensed therapists</span>
@@ -47,7 +47,7 @@ export default function Hero() {
                 </div>
           </div>
           
-          <div className="flex md:flex-row items-center justify-start gap-6">
+          <div className="flex flex-col md:flex-row items-center justify-start gap-6">
             <Link href={"/book-appointment"}>
               <Button className="bg-primary shadow-2xl font-heading w-fit py-4 px-6 text-white rounded-full cursor-pointer">
                 Book An Appointment
