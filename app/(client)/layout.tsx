@@ -7,6 +7,7 @@ import { fetchProfile } from '@/lib/features/auth/authSlice'
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
 import { usePathname, useRouter } from 'next/navigation'
+import RouteLoader from '@/components/global/RouteLoader'
 
 export function ClientGuard({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch()
@@ -43,6 +44,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <main className="max-w-5xl mx-auto">
       {/* <SmoothScroll/> */}
       {!hideLayout && <Navbar />}
+        <RouteLoader/>
         <ClientGuard>{children}</ClientGuard>
       {!hideLayout && <Footer />}
       </main>
