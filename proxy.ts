@@ -42,7 +42,6 @@
 //   matcher: ["/((?!_next|api|favicon.ico).*)"],
 // };
 
-
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import api from "@/lib/axiosInstance";
@@ -59,7 +58,7 @@ export async function proxy(request: NextRequest) {
   const isRootDomain =
     cleanHost === "lokeshverma.in" || cleanHost === "www.lokeshverma.in";
 
-  // MARKETING / SUPER ADMIN
+  // MARKETING / SUPER ADMIN (ROOT)
   if (isLocalhost || isRootDomain || isVercelDomain) {
     return NextResponse.rewrite(new URL(`/(marketing)${pathname}`, request.url));
   }
@@ -72,7 +71,7 @@ export async function proxy(request: NextRequest) {
 
   const subdomain = cleanHost.replace(".lokeshverma.in", "");
 
-  // Basic sanity
+  // Skip empty or invalid subdomain
   if (!subdomain || subdomain === "www") {
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
@@ -85,7 +84,7 @@ export async function proxy(request: NextRequest) {
         headers: {
           host: cleanHost,
           cookie: request.headers.get("cookie") || "",
-          "x-tenant-subdomain": subdomain, // optional
+          "x-tenant-subdomain": subdomain,
         },
         cache: "no-store",
       }
@@ -93,11 +92,10 @@ export async function proxy(request: NextRequest) {
 
     if (res.status === 404) {
       // Tenant does NOT exist → show dead page
-      return NextResponse.rewrite(new URL("/not-found", request.url));
+      return NextResponse.rewrite(new URL("/tenant-not-found", request.url));
     }
 
     if (!res.ok) {
-      // Backend down or error → redirect to root
       return NextResponse.redirect(new URL("https://lokeshverma.in"));
     }
   } catch (err) {
