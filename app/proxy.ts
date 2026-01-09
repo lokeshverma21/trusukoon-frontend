@@ -44,6 +44,7 @@
 
 
 
+import api from "@/lib/axiosInstance";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -88,25 +89,12 @@ export async function proxy(request: NextRequest) {
      (THIS IS THE FIX)
   ============================ */
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/company-setting`,
-      {
-        method: "GET",
-        headers: {
-          // backend already resolves tenant from host,
-          // but this helps if you ever change logic
-          "x-tenant-subdomain": subdomain,
-          cookie: request.headers.get("cookie") || "",
-        },
-        credentials: "include",
-        cache: "no-store",
-      }
-    );
+    const res = await api.get("/tenant-info")
 
     if (res.status === 404) {
       // tenant does NOT exist → kill it
       return NextResponse.rewrite(
-        new URL("/tenant-not-found", request.url)
+        new URL("/unauthorized", request.url)
       );
       // OR redirect to root if you prefer:
       // return NextResponse.redirect(new URL("https://lokeshverma.in"));
