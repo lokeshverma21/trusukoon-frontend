@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  // baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}`,//add /v1 in production
-  baseURL: `https://trusukoon-backend-pvt.vercel.app/api/v1`,
+  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1`,//add /v1 in production
+  // baseURL: `https://trusukoon-backend-pvt.vercel.app/api/v1`,
   withCredentials: true, // ✅ so cookies (JWT) are sent automatically
 });
 

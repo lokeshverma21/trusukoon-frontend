@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "https://trusukoon-backend-pvt.vercel.app/api/:path*",
+        destination: "https://trusukoon-backend-pvt.vercel.app/api/v1/:path*",
       },
     ];
   },
