@@ -166,10 +166,10 @@ function Navbar() {
 
         <div className="flex flex-col p-4 space-y-4">
             <Link href={'/'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-            <Link href={'/book-appointment'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Book Appointment</Link>
+            {/* <Link href={'/book-appointment'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Book Appointment</Link> */}
             <Link href={'/about-us'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
             <Link href={'/contact-us'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link>
-            <Link href={'/my-appointments'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>My Appointments</Link>
+            {/* <Link href={'/my-appointments'} className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>My Appointments</Link> */}
             {/* <Link href="#" className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Recurring Booking</Link> */}
             {/* <Link href="#" className="text-sm font-medium text-gray-800 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Consultation</Link> */}
         </div>

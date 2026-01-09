@@ -98,6 +98,7 @@ export const fetchAllStaff = createAsyncThunk<IStaff[], void, { rejectValue: str
   async (_, { rejectWithValue }) => {
     try {
       const res = await api.get(`/staff`, { withCredentials: true });
+      console.log(res)
       return res.data.data as IStaff[];
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;

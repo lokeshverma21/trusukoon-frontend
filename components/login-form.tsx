@@ -24,8 +24,8 @@ import { useAppDispatch, useAppSelector } from "@/lib/store/hooks"
 import { loginUser } from "@/lib/features/auth/authSlice"
 
 const loginSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email(),
+  password: z.string().min(6),
 })
 
 type LoginFormData = z.infer<typeof loginSchema>
@@ -43,45 +43,33 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
   })
 
   const onSubmit = (data: LoginFormData) => {
-    dispatch(loginUser(data))
+    dispatch(loginUser(data)) // ✅ ONLY email + password
   }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Login</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your credentials to continue
           </CardDescription>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  {...register("email")}
-                />
+                <FieldLabel>Email</FieldLabel>
+                <Input {...register("email")} />
                 {errors.email && (
                   <p className="text-red-500 text-sm">{errors.email.message}</p>
                 )}
               </Field>
 
               <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
-                <Input id="password" type="password" {...register("password")} />
+                <FieldLabel>Password</FieldLabel>
+                <Input type="password" {...register("password")} />
                 {errors.password && (
                   <p className="text-red-500 text-sm">{errors.password.message}</p>
                 )}
@@ -91,15 +79,19 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 <Button type="submit" disabled={loading}>
                   {loading ? "Logging in..." : "Login"}
                 </Button>
-                <Button variant="outline" type="button">
-                  Login with Google
-                </Button>
+
                 {error && (
                   <p className="text-red-600 text-sm mt-2 text-center">{error}</p>
                 )}
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <Link href="/signup">Sign up</Link>
-                </FieldDescription>
+
+                {/* Signup only on root domain */}
+                {typeof window !== "undefined" &&
+                  window.location.hostname === "trusukoon.com" && (
+                    <FieldDescription className="text-center">
+                      Don&apos;t have an account?{" "}
+                      <Link href="/signup">Sign up</Link>
+                    </FieldDescription>
+                  )}
               </Field>
             </FieldGroup>
           </form>

@@ -19,7 +19,7 @@ export const AppointmentCard: FC<{ appointment: Appointment }> = ({ appointment 
             </div>
             <div>
               <h3 className="font-semibold text-lg text-headings font-heading">{appointment.service.name}</h3>
-              <p className="text-sm text-foreground/80">with {appointment.staff?.name}</p>
+              <p className="text-sm text-foreground/80">with {appointment.staff?.user.name}</p>
             </div>
           </div>
         </div>

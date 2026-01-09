@@ -172,22 +172,22 @@ export default function ReportsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <SummaryCard
             title="Total Appointments"
-            value={summary.totalAppointments}
+            value={summary.todayAppointments}
             icon={<Activity className="h-5 w-5 text-blue-500" />}
           />
           <SummaryCard
             title="Total Revenue"
-            value={`₹${summary.totalRevenue.toLocaleString()}`}
+            value={`₹${summary.tomorrowAppointments.toLocaleString()}`}
             icon={<Wallet className="h-5 w-5 text-green-500" />}
           />
           <SummaryCard
             title="New Patients (Month)"
-            value={summary.newPatients}
+            value={summary.pendingPayments}
             icon={<Users className="h-5 w-5 text-purple-500" />}
           />
           <SummaryCard
             title="Active Staff"
-            value={summary.activeStaff}
+            value={summary.pendingPayments}
             icon={<Clock className="h-5 w-5 text-orange-500" />}
           />
         </div>

@@ -8,6 +8,8 @@ import { AdminStatsState,
   ServiceInsightItem,
   StaffPerformanceItem,
   SummaryStats,
+  TodayTomorrowAppointmentItem,
+  TodayTomorrowAppointments
 } from "@/types/adminStats.types";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
@@ -24,6 +26,7 @@ const initialState: AdminStatsState = {
   serviceInsights: [],
   patientInsights: null,
   operationalEfficiency: null,
+  todayTomorrow: null,
 
   loading: {
     summary: false,
@@ -33,6 +36,7 @@ const initialState: AdminStatsState = {
     serviceInsights: false,
     patientInsights: false,
     operationalEfficiency: false,
+    todayTomorrow: false,
   },
   errors: {
     summary: null,
@@ -42,6 +46,7 @@ const initialState: AdminStatsState = {
     serviceInsights: null,
     patientInsights: null,
     operationalEfficiency: null,
+    todayTomorrow: null
   },
 };
 
@@ -104,6 +109,25 @@ export const fetchSummary = createAsyncThunk<
     return rejectWithValue(extractErrorMessage(err));
   }
 });
+
+export const fetchTodayTomorrowAppointments = createAsyncThunk<
+  TodayTomorrowAppointments,
+  void,
+  { rejectValue: string }
+>("adminStats/fetchTodayTomorrowAppointments", async (_arg, { rejectWithValue }) => {
+  try {
+    const resp = await api.get(`${BASE_PATH}/today-tomorrow`);
+    const payload = extractData<{ data?: TodayTomorrowAppointments }>(resp.data ?? resp);
+    const data =
+      (payload && payload.data) ??
+      (payload as unknown as TodayTomorrowAppointments);
+      console.log(resp)
+    return data;
+  } catch (err) {
+    return rejectWithValue(extractErrorMessage(err));
+  }
+});
+
 
 export const fetchAppointmentTrends = createAsyncThunk<
   AppointmentTrendItem[],
@@ -227,6 +251,7 @@ const adminStatsSlice = createSlice({
         serviceInsights: false,
         patientInsights: false,
         operationalEfficiency: false,
+        todayTomorrow: false,
       };
       state.errors = {
         summary: null,
@@ -236,6 +261,7 @@ const adminStatsSlice = createSlice({
         serviceInsights: null,
         patientInsights: null,
         operationalEfficiency: null,
+        todayTomorrow: null,
       };
     },
   },
@@ -253,6 +279,24 @@ const adminStatsSlice = createSlice({
     builder.addCase(fetchSummary.rejected, (state, action) => {
       state.loading.summary = false;
       state.errors.summary = action.payload ?? "Failed to fetch summary";
+    });
+    // today & tomorrow table
+    builder.addCase(fetchTodayTomorrowAppointments.pending, (state) => {
+      state.loading.todayTomorrow = true;
+      state.errors.todayTomorrow = null;
+    });
+    builder.addCase(
+      fetchTodayTomorrowAppointments.fulfilled,
+      (state, action: PayloadAction<TodayTomorrowAppointments>) => {
+        state.loading.todayTomorrow = false;
+        state.todayTomorrow = action.payload;
+        state.errors.todayTomorrow = null;
+      }
+    );
+    builder.addCase(fetchTodayTomorrowAppointments.rejected, (state, action) => {
+      state.loading.todayTomorrow = false;
+      state.errors.todayTomorrow =
+        action.payload ?? "Failed to fetch today & tomorrow appointments";
     });
 
     // appointment trends
@@ -367,6 +411,9 @@ export type RootStateWithAdminStats = { adminStats: AdminStatsState };
 
 export const selectAdminSummary = (state: RootStateWithAdminStats): SummaryStats | null =>
   state.adminStats.summary;
+
+export const selectTodayTomorrowAppointments = (state: RootStateWithAdminStats): TodayTomorrowAppointments | null =>
+  state.adminStats.todayTomorrow;
 
 export const selectAppointmentTrends = (state: RootStateWithAdminStats): AppointmentTrendItem[] =>
   state.adminStats.appointmentTrends;

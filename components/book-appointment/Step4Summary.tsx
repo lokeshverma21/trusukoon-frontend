@@ -65,7 +65,7 @@ export default function Step4Summary({
 
     try {
       // const resultAction = await dispatch(createAppointment(payload));
-      dispatch(createAppointment(payload))
+      // dispatch(createAppointment(payload))
     // console.log(payload)
 
       // if (createAppointment.fulfilled.match(resultAction)) {

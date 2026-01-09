@@ -52,6 +52,7 @@ export const fetchAppointments = createAsyncThunk<
 >("appointment/fetchAll", async (params, { rejectWithValue }) => {
   try {
     const response = await api.get("/appointment", { params });
+    console.log(response)
     return response.data.data;
   } catch (error) {
     return rejectWithValue(getErrorMessage(error));
@@ -216,8 +217,8 @@ const appointmentSlice = createSlice({
       })
       .addCase(createAppointment.fulfilled, (state, action: PayloadAction<Appointment>) => {
         state.loading = false;
+        state.appointmentList.unshift(action.payload);
         state.success = true;
-        state.appointmentList.push(action.payload);
       })
       .addCase(createAppointment.rejected, (state, action) => {
         state.loading = false;

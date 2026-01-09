@@ -20,7 +20,7 @@ export interface User {
   name: string;
   email: string;
   phone: string;
-  role: "patient" | "staff" | "admin";
+  role: "super_admin" | "admin" | "staff" | "patient"
   timezone: string;
   googleCalendar?: { connected: boolean };
   createdAt: string;
@@ -29,7 +29,6 @@ export interface User {
 
 interface LoginResponse {
   user: User;
-  token: string;
 }
 
 interface RegisterInput {
@@ -37,7 +36,7 @@ interface RegisterInput {
   email: string;
   phone: string;
   password: string;
-  role?: "staff" | "admin" | "patient";
+  role?: "super_admin" | "admin" | "staff" | "patient"
   timezone?: string;
 }
 
@@ -48,7 +47,7 @@ interface UpdateUserInput {
   avatarUrl?: string;
   timezone?: string;
   meta?: Record<string, unknown>;
-  role?: "staff" | "admin" | "patient";
+  role?: "super_admin" | "admin" | "staff" | "patient"
 }
 
 interface AuthState {

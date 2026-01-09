@@ -19,7 +19,8 @@ import {
   IconUsers,
   IconUsersGroup,
   IconLayoutList,
-  IconListCheck
+  IconListCheck,
+  IconMessage
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/admin/nav-documents"
@@ -74,6 +75,11 @@ const data = {
       title: "Patients",
       url: "/admin/patients",
       icon: IconUsersGroup,
+    },
+    {
+      title: "Message Templates",
+      url: "/admin/template-management",
+      icon: IconMessage,
     },
   ],
   navClouds: [

@@ -28,6 +28,7 @@ import OperationalSnapshot from "@/components/admin/dashboard/OperationalSnapsho
 import PageBreadcrumb from "@/components/admin/PageBreadcrumb";
 import withRoleGuard from "@/lib/withRoleGuard";
 import Loader from "@/components/Loader";
+import TodayTomorrowTable from "@/components/admin/dashboard/TodayTomorrowTable";
 
 const AdminDashboardPage = () => {
   const dispatch = useAppDispatch();
@@ -79,6 +80,10 @@ const AdminDashboardPage = () => {
       />
       {/* 🔹 Summary Cards */}
       {summary && <SummaryCards  summary={summary} />}
+
+        {/* <div className="grid grid-cols-1 md:grid-cols-2"> */}
+          <TodayTomorrowTable/>
+        {/* </div> */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* 🔹 Appointment Trends */}

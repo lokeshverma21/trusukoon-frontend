@@ -9,16 +9,21 @@ import {
   selectAppointmentState,
   cancelAppointment,
 } from "@/lib/features/appointment/appointmentSlice";
-import { CircleX, NotebookPen, Plus, Trash } from "lucide-react";
+import { CircleX, MessageCircleMore, NotebookPen, Plus, Trash } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import EditAppointmentModal from "./EditAppointmentModal";
 import { debounce } from "lodash";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import CreateAppointmentModal from "./CreateAppointmentModal";
+import { fetchAllStaff } from "@/lib/features/staff/staffSlice";
+import { fetchServices } from "@/lib/features/service/serviceSlice";
 
 const AppointmentsTable = () => {
   const dispatch = useAppDispatch();
+  const staffList = useAppSelector((state) => state.staff.staffList);
+  const serviceList = useAppSelector((state) => state.services.services);
   const { appointmentList, loading } = useAppSelector(selectAppointmentState);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAction, setSelectedAction] = useState<"cancel" | "delete" | null>(null);
@@ -59,7 +64,28 @@ const AppointmentsTable = () => {
   // Fetch all appointments on mount
   useEffect(() => {
     dispatch(fetchAppointments());
+    dispatch(fetchAllStaff())
+    dispatch(fetchServices({ isAdmin: true }))
   }, [dispatch]);
+
+  function buildWhatsAppLink(phone: string, message: string) {
+    const cleaned = phone.replace(/\D/g, "");
+    const encodedMsg = encodeURIComponent(message);
+    return `https://wa.me/${cleaned}?text=${encodedMsg}`;
+  }
+
+
+  function getReminderMessage(patientName: string, startAt: string) {
+    const date = new Date(startAt).toLocaleString("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+
+    return `Hello *${patientName}*,
+    This is a reminder for your appointment scheduled on *${date}*.
+    If you need to reschedule or have any questions, please reply here.
+    _Thank you._`;
+  }
 
   return (
     <div className="mt-6">
@@ -101,9 +127,15 @@ const AppointmentsTable = () => {
           </div>
 
           <div className="flex gap-2">
-            <Button>
+            {/* <Button>
               <Plus size={16} /> Add Appointment
-            </Button>
+            </Button> */}
+            <CreateAppointmentModal
+              staffList={staffList}
+              serviceList={serviceList}
+              onCreated={() => dispatch(fetchAppointments())}
+            />
+
             <Button variant="secondary">Export</Button>
           </div>
         </div>
@@ -122,6 +154,7 @@ const AppointmentsTable = () => {
                   "Status",
                   "Payment",
                   "Action",
+                  "Send Message"
                 ].map((header) => (
                   <th
                     key={header}
@@ -144,7 +177,17 @@ const AppointmentsTable = () => {
                   </td>
                 </tr>
               ) : appointmentList.length > 0 ? (
-                appointmentList.map((appt) => (
+                appointmentList.map((appt) => {
+
+                  const waLink = buildWhatsAppLink(
+                    appt.patient?.phone || "",
+                    getReminderMessage(
+                      appt.patient?.name || "Patient",
+                      appt.startAt
+                    )
+                  );
+
+                  return(
                   <tr
                     key={appt._id}
                     className="hover:bg-muted/5 transition-colors duration-150"
@@ -154,7 +197,7 @@ const AppointmentsTable = () => {
                       <div>
                         <p>{appt.patient?.name}</p>
                         <p className="text-muted-foreground text-xs">
-                          {appt.patient?.email}
+                          {appt.patient?.phone}
                         </p>
                       </div>
                     </td>
@@ -162,19 +205,19 @@ const AppointmentsTable = () => {
                     {/* Staff */}
                     <td className="whitespace-nowrap py-4 pe-3 text-sm">
                       <div>
-                        <p>{appt.staff?.name}</p>
-                        <p className="text-muted-foreground text-xs">
-                          {appt.staff?.role}
-                        </p>
+                        <p>{appt.staff?.user?.name || ""}</p>
+                        {/* <p className="text-muted-foreground text-xs">
+                          {appt.staff?.user?.role}
+                        </p> */}
                       </div>
                     </td>
 
                     {/* Service */}
                     <td className="whitespace-nowrap py-4 pe-3 text-sm">
                       <div>
-                        <p>{appt.service?.name}</p>
+                        <p>{appt.service?.name || ""}</p>
                         <p className="text-muted-foreground text-xs">
-                          ₹{appt.service?.price} / {appt.service?.duration}min
+                          ₹{appt.service?.price || ""} / {appt.service?.duration || ""}min
                         </p>
                       </div>
                     </td>
@@ -275,8 +318,19 @@ const AppointmentsTable = () => {
                         <TooltipContent>Delete Appointment</TooltipContent>
                       </Tooltip>
                     </td>
+
+                    <td>
+                      <Button
+                        className="bg-primary text-white hover:text-white cursor-pointer"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => window.open(waLink, "_blank")}
+                        >
+                        WhatsApp <MessageCircleMore />
+                      </Button>
+                    </td>
                   </tr>
-                ))
+                )})
               ) : (
                 <tr>
                   <td

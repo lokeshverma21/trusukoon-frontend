@@ -118,9 +118,9 @@ const EditAppointmentModal: React.FC<EditAppointmentModalProps> = ({
             {/* Staff Info */}
             <div>
               <Label className="text-sm text-muted-foreground">Staff</Label>
-              <p className="text-sm font-medium">{appointment.staff?.name}</p>
+              <p className="text-sm font-medium">{appointment.staff?.user.name}</p>
               <p className="text-xs text-muted-foreground capitalize">
-                {appointment.staff?.email}
+                {appointment.staff?.user.email}
               </p>
             </div>
 

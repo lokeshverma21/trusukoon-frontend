@@ -110,7 +110,7 @@ export default function AppointmentsPage() {
                 <option value="ALL">All</option>
                 {staffList.map((staff) => (
                   <option key={staff._id} value={staff._id}>
-                    {staff.name}
+                    {staff.user.name}
                   </option>
                 ))}
               </CustomSelect>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { Disclosure, Menu } from "@headlessui/react"
 import { MenuIcon, X, Bell } from "lucide-react"
 import Image from "next/image"
@@ -22,6 +22,19 @@ function classNames(...classes: (string | undefined | boolean)[]) {
 
 export default function Topbar() {
   const user = useAppSelector((state: RootState) => state.auth.user);
+
+  // State to store the current date and time
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  // Effect to update the current date every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDate(new Date()); // Update the current date
+    }, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Disclosure
@@ -55,13 +68,27 @@ export default function Topbar() {
                             }}
                           />
                         </div>
-                        <div className="flex flex-col">
+                        {/* <div className="flex flex-col">
                           <span className="text-sm font-semibold tracking-wide text-primary">
                             TruSukoon
                           </span>
                           <span className="hidden md:block text-xs font-normal text-muted">
                             Your space for inner calm
                           </span>
+                        </div> */}
+                        <div>
+                          <div className="font-medium text-sm">
+                            {currentDate.toLocaleString('en-US', {
+                              weekday: 'short', // 'long' means full day name (e.g., "Monday")
+                              hour: '2-digit', // '2-digit' means the hour is in two digits (e.g., "04")
+                              minute: '2-digit', // Same for minute
+                              second: '2-digit',
+                            })}
+                            {/* year: '2-digit',
+                              month: 'short',  // 'long' gives full month name (e.g., "December")
+                              day: 'numeric', */}
+                          </div>
+
                         </div>
                       </div>
                 </div>
@@ -73,13 +100,13 @@ export default function Topbar() {
                 
                 <MaximizeScreen/>
                 
-                <button
+                {/* <button
                   type="button"
                   className="relative rounded-full p-1 text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500 dark:hover:text-white"
                 >
                   <span className="sr-only">View notifications</span>
                   <Bell className="size-6" aria-hidden="true" />
-                </button>
+                </button> */}
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">

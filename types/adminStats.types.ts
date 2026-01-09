@@ -6,16 +6,23 @@
 
 // Summary of all dashboard metrics
 export interface SummaryStats {
-  totalAppointments: number;
-  confirmedToday: number;
-  completedMonth: number;
-  cancelledCount: number;
-  noShowCount: number;
-  totalRevenue: number;
+  todayAppointments: number;
+  tomorrowAppointments: number;
   pendingPayments: number;
-  newPatients: number;
-  activeStaff: number;
 }
+//today tomorrow
+export type TodayTomorrowAppointmentItem = {
+  patientName: string;
+  contact: string;
+  status: string;
+  time: string; // ISO string
+};
+
+export type TodayTomorrowAppointments = {
+  today: TodayTomorrowAppointmentItem[];
+  tomorrow: TodayTomorrowAppointmentItem[];
+};
+
 
 // Daily/weekly/monthly appointment trend item
 export interface AppointmentTrendItem {
@@ -82,6 +89,7 @@ export interface AdminStatsState {
   serviceInsights: ServiceInsightItem[];
   patientInsights: PatientInsights | null;
   operationalEfficiency: OperationalEfficiency | null;
+  todayTomorrow: TodayTomorrowAppointments | null;
 
   loading: {
     summary: boolean;
@@ -91,6 +99,7 @@ export interface AdminStatsState {
     serviceInsights: boolean;
     patientInsights: boolean;
     operationalEfficiency: boolean;
+    todayTomorrow: boolean;
   };
 
   errors: {
@@ -101,6 +110,7 @@ export interface AdminStatsState {
     serviceInsights?: string | null;
     patientInsights?: string | null;
     operationalEfficiency?: string | null;
+    todayTomorrow: string | null;
   };
 }
 

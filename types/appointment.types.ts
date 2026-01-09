@@ -13,8 +13,21 @@ export type PaymentStatus = 'pending'|'paid'| 'refund';
 
 export interface Appointment {
   _id: string;
-  patient: { _id: string; name: string; email: string };
-  staff: { _id: string; name: string; email: string; role: string };
+  patient: {
+    _id: string;
+    name: string;
+    phone: string;
+    email?: string;
+  };
+  staff: {
+    _id: string;           // Staff ID
+    user: {
+      _id: string;
+      name: string;
+      email: string;
+      role: string;
+    };
+  };
   service: { _id: string; name: string; duration: number; price: number };
   startAt: string;
   endAt: string;
@@ -27,7 +40,11 @@ export interface Appointment {
 }
 
 export interface AppointmentPayload {
-  patient: string;
+  patient: {
+    name: string;
+    phone: string;
+    email?: string;
+  }; 
   staff: string;
   service: string;
   startAt: string;
