@@ -47,7 +47,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") || "";
   const pathname = request.nextUrl.pathname;
 
@@ -58,7 +58,7 @@ export async function middleware(request: NextRequest) {
     cleanHost === "www.lokeshverma.in" ||
     cleanHost === "localhost";
 
-  // ✅ Allow root domain to behave normally
+  // ✅ DO NOTHING for root domain
   if (isRootDomain) {
     return NextResponse.next();
   }
@@ -103,7 +103,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
-  // ✅ Valid tenant → tenant routes
+  // ✅ Valid tenant → rewrite to tenant routes
   const response = NextResponse.rewrite(
     new URL(`/(tenant)${pathname}`, request.url)
   );
