@@ -89,20 +89,34 @@ export async function proxy(request: NextRequest) {
      (THIS IS THE FIX)
   ============================ */
   try {
-    const res = await api.get("/tenant-info")
-
-    if (res.status === 404) {
-      // tenant does NOT exist → kill it
-      return NextResponse.rewrite(
-        new URL("/unauthorized", request.url)
-      );
-      // OR redirect to root if you prefer:
-      // return NextResponse.redirect(new URL("https://lokeshverma.in"));
+  const res = await fetch(
+    "https://trusukoon-backend-pvt.vercel.app/api/v1/tenant-info",
+    {
+      headers: {
+        host: cleanHost, // IMPORTANT: backend resolves tenant from host
+        cookie: request.headers.get("cookie") || "",
+      },
+      cache: "no-store",
     }
-  } catch (err) {
-    // backend down? don't brick prod
-    console.error("Tenant validation failed", err);
+  );
+
+  if (res.status === 404) {
+    return NextResponse.rewrite(
+      new URL("/tenant-not-found", request.url)
+    );
   }
+
+  if (!res.ok) {
+    return NextResponse.redirect(
+      new URL("https://lokeshverma.in")
+    );
+  }
+} catch (err) {
+  console.error("Tenant validation failed", err);
+  return NextResponse.redirect(
+    new URL("https://lokeshverma.in")
+  );
+}
 
   /* ============================
      TENANT ROUTING (UNCHANGED)
