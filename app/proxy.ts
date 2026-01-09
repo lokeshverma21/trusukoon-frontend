@@ -3,28 +3,43 @@
 
 // export function proxy(request: NextRequest) {
 //   const host = request.headers.get("host") || "";
+//   const pathname = request.nextUrl.pathname;
 
+//   // Normalize host (remove port)
+//   const cleanHost = host.split(":")[0];
+
+//   const isLocalhost = cleanHost === "localhost";
+//   const isVercelDomain = cleanHost.endsWith(".vercel.app");
 //   const isRootDomain =
-//     host === "trusukoon.com" ||
-//     host === "www.trusukoon.com" ||
-//     host.match(/^localhost(:\d+)?$/);
+//     cleanHost === "lokeshverma.in" || cleanHost === "www.lokeshverma.in";
 
-//   if (isRootDomain) {
+//   // MARKETING / SUPER ADMIN
+//   if (isLocalhost || isRootDomain || isVercelDomain) {
 //     return NextResponse.rewrite(
-//       new URL("/(marketing)" + request.nextUrl.pathname, request.url)
+//       new URL(`/(marketing)${pathname}`, request.url)
 //     );
 //   }
 
-//   return NextResponse.rewrite(
-//     new URL("/(tenant)" + request.nextUrl.pathname, request.url)
+//   // TENANT DOMAIN
+//   const subdomain = cleanHost.replace(".lokeshverma.in", "");
+
+//   // OPTIONAL: block invalid tenants
+//   if (!subdomain || subdomain === "www") {
+//     return NextResponse.redirect(new URL("/unauthorized", request.url));
+//   }
+
+//   const response = NextResponse.rewrite(
+//     new URL(`/(tenant)${pathname}`, request.url)
 //   );
+
+//   // pass tenant to backend
+//   response.headers.set("x-tenant-id", subdomain);
+
+//   return response;
 // }
 
 // export const config = {
-//   matcher: [
-//     // Match everything except internal Next.js assets and API routes
-//     "/((?!_next/static|_next/image|favicon.ico|api).*)",
-//   ],
+//   matcher: ["/((?!_next|api|favicon.ico).*)"],
 // };
 
 
@@ -32,7 +47,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") || "";
   const pathname = request.nextUrl.pathname;
 
@@ -44,26 +59,70 @@ export function proxy(request: NextRequest) {
   const isRootDomain =
     cleanHost === "lokeshverma.in" || cleanHost === "www.lokeshverma.in";
 
-  // MARKETING / SUPER ADMIN
+  /* ============================
+     MARKETING / SUPER ADMIN
+  ============================ */
   if (isLocalhost || isRootDomain || isVercelDomain) {
     return NextResponse.rewrite(
       new URL(`/(marketing)${pathname}`, request.url)
     );
   }
 
-  // TENANT DOMAIN
-  const subdomain = cleanHost.replace(".lokeshverma.in", "");
-
-  // OPTIONAL: block invalid tenants
-  if (!subdomain || subdomain === "www") {
-    return NextResponse.redirect(new URL("/unauthorized", request.url));
+  /* ============================
+     TENANT DOMAIN
+  ============================ */
+  if (!cleanHost.endsWith(".lokeshverma.in")) {
+    // unknown domain → hard redirect
+    return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
+  const subdomain = cleanHost.replace(".lokeshverma.in", "");
+
+  // basic sanity check
+  if (!subdomain || subdomain === "www") {
+    return NextResponse.redirect(new URL("https://lokeshverma.in"));
+  }
+
+  /* ============================
+     🔥 NEW: VALIDATE TENANT
+     (THIS IS THE FIX)
+  ============================ */
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/company-setting`,
+      {
+        method: "GET",
+        headers: {
+          // backend already resolves tenant from host,
+          // but this helps if you ever change logic
+          "x-tenant-subdomain": subdomain,
+          cookie: request.headers.get("cookie") || "",
+        },
+        credentials: "include",
+        cache: "no-store",
+      }
+    );
+
+    if (res.status === 404) {
+      // tenant does NOT exist → kill it
+      return NextResponse.rewrite(
+        new URL("/tenant-not-found", request.url)
+      );
+      // OR redirect to root if you prefer:
+      // return NextResponse.redirect(new URL("https://lokeshverma.in"));
+    }
+  } catch (err) {
+    // backend down? don't brick prod
+    console.error("Tenant validation failed", err);
+  }
+
+  /* ============================
+     TENANT ROUTING (UNCHANGED)
+  ============================ */
   const response = NextResponse.rewrite(
     new URL(`/(tenant)${pathname}`, request.url)
   );
 
-  // pass tenant to backend
   response.headers.set("x-tenant-id", subdomain);
 
   return response;
