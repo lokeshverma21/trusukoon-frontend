@@ -100,6 +100,8 @@ export async function proxy(request: NextRequest) {
     }
   );
 
+  console.log("Tenant Info:", res)
+  
   if (res.status === 404) {
     return NextResponse.rewrite(
       new URL("/tenant-not-found", request.url)
