@@ -43,16 +43,15 @@
 // };
 
 
-
-import api from "@/lib/axiosInstance";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import api from "@/lib/axiosInstance";
 
 export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") || "";
   const pathname = request.nextUrl.pathname;
 
-  // Normalize host (remove port)
+  // Normalize host
   const cleanHost = host.split(":")[0];
 
   const isLocalhost = cleanHost === "localhost";
@@ -60,73 +59,54 @@ export async function proxy(request: NextRequest) {
   const isRootDomain =
     cleanHost === "lokeshverma.in" || cleanHost === "www.lokeshverma.in";
 
-  /* ============================
-     MARKETING / SUPER ADMIN
-  ============================ */
+  // MARKETING / SUPER ADMIN
   if (isLocalhost || isRootDomain || isVercelDomain) {
-    return NextResponse.rewrite(
-      new URL(`/(marketing)${pathname}`, request.url)
-    );
+    return NextResponse.rewrite(new URL(`/(marketing)${pathname}`, request.url));
   }
 
-  /* ============================
-     TENANT DOMAIN
-  ============================ */
+  // TENANT DOMAIN
   if (!cleanHost.endsWith(".lokeshverma.in")) {
-    // unknown domain → hard redirect
+    // Unknown domain → redirect to root
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
   const subdomain = cleanHost.replace(".lokeshverma.in", "");
 
-  // basic sanity check
+  // Basic sanity
   if (!subdomain || subdomain === "www") {
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
-  /* ============================
-     🔥 NEW: VALIDATE TENANT
-     (THIS IS THE FIX)
-  ============================ */
+  // Validate tenant via backend
   try {
-  const res = await fetch(
-    "https://trusukoon-backend-pvt.vercel.app/api/v1/tenant-info",
-    {
-      headers: {
-        host: cleanHost, // IMPORTANT: backend resolves tenant from host
-        cookie: request.headers.get("cookie") || "",
-      },
-      cache: "no-store",
+    const res = await fetch(
+      `https://trusukoon-backend-pvt.vercel.app/api/v1/tenant-info`,
+      {
+        headers: {
+          host: cleanHost,
+          cookie: request.headers.get("cookie") || "",
+          "x-tenant-subdomain": subdomain, // optional
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (res.status === 404) {
+      // Tenant does NOT exist → show dead page
+      return NextResponse.rewrite(new URL("/not-found", request.url));
     }
-  );
 
-  console.log("Tenant Info:", res)
-  
-  if (res.status === 404) {
-    return NextResponse.rewrite(
-      new URL("/tenant-not-found", request.url)
-    );
+    if (!res.ok) {
+      // Backend down or error → redirect to root
+      return NextResponse.redirect(new URL("https://lokeshverma.in"));
+    }
+  } catch (err) {
+    console.error("Tenant validation failed", err);
+    return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
-  if (!res.ok) {
-    return NextResponse.redirect(
-      new URL("https://lokeshverma.in")
-    );
-  }
-} catch (err) {
-  console.error("Tenant validation failed", err);
-  return NextResponse.redirect(
-    new URL("https://lokeshverma.in")
-  );
-}
-
-  /* ============================
-     TENANT ROUTING (UNCHANGED)
-  ============================ */
-  const response = NextResponse.rewrite(
-    new URL(`/(tenant)${pathname}`, request.url)
-  );
-
+  // Tenant exists → rewrite to tenant path
+  const response = NextResponse.rewrite(new URL(`/(tenant)${pathname}`, request.url));
   response.headers.set("x-tenant-id", subdomain);
 
   return response;
