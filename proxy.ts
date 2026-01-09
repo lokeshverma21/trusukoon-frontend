@@ -44,8 +44,6 @@
 
 
 
-
-
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import api from "@/lib/axiosInstance";
@@ -62,54 +60,52 @@ export async function proxy(request: NextRequest) {
   const isRootDomain =
     cleanHost === "lokeshverma.in" || cleanHost === "www.lokeshverma.in";
 
-  /* ===========================
+  /* =========================
      ROOT / MARKETING / SUPER ADMIN
-  ============================ */
+  ========================= */
   if (isLocalhost || isRootDomain || isVercelDomain) {
-    // If root domain and path is "/", send to marketing home
-    const marketingPath = pathname === "/" ? "/(marketing)/" : `/(marketing)${pathname}`;
-    return NextResponse.rewrite(new URL(marketingPath, request.url));
+    // Rewrite root or www to (marketing)
+    return NextResponse.rewrite(new URL(`/(marketing)${pathname}`, request.url));
   }
 
-  /* ===========================
-     NON-LOKESHVERMA DOMAINS
-  ============================ */
+  /* =========================
+     TENANT DOMAIN
+  ========================= */
   if (!cleanHost.endsWith(".lokeshverma.in")) {
     // Unknown domain → redirect to root
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
-  /* ===========================
-     TENANT SUBDOMAIN
-  ============================ */
   const subdomain = cleanHost.replace(".lokeshverma.in", "");
 
-  // Skip invalid subdomains
+  // Only validate tenant if it's a real subdomain (ignore empty or 'www')
   if (!subdomain || subdomain === "www") {
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
-  // Validate tenant via backend
+  /* =========================
+     VALIDATE TENANT VIA BACKEND
+  ========================= */
   try {
     const res = await fetch(
       `https://trusukoon-backend-pvt.vercel.app/api/v1/tenant-info`,
       {
         headers: {
-          host: cleanHost, // backend resolves tenant
+          host: cleanHost,
           cookie: request.headers.get("cookie") || "",
-          "x-tenant-subdomain": subdomain,
+          "x-tenant-subdomain": subdomain, // optional
         },
         cache: "no-store",
       }
     );
 
     if (res.status === 404) {
-      // Tenant does NOT exist → dead page
+      // Tenant does NOT exist → show dead page
       return NextResponse.rewrite(new URL("/tenant-not-found", request.url));
     }
 
     if (!res.ok) {
-      // Backend error → redirect to root
+      // Backend down or error → redirect to root
       return NextResponse.redirect(new URL("https://lokeshverma.in"));
     }
   } catch (err) {
@@ -117,15 +113,19 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
-  /* ===========================
-     Valid tenant → rewrite to tenant path
-  ============================ */
-  const response = NextResponse.rewrite(new URL(`/(tenant)${pathname}`, request.url));
+  /* =========================
+     VALID TENANT → ROUTING
+  ========================= */
+  const response = NextResponse.rewrite(
+    new URL(`/(tenant)${pathname}`, request.url)
+  );
+
+  // Pass subdomain to tenant pages
   response.headers.set("x-tenant-id", subdomain);
 
   return response;
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico).*)"], // matches all frontend routes
+  matcher: ["/((?!_next|api|favicon.ico).*)"],
 };
