@@ -51,6 +51,9 @@ export async function proxy(request: NextRequest) {
   const host = request.headers.get("host") || "";
   const pathname = request.nextUrl.pathname;
 
+  console.log("first", host)
+  console.log("second", pathname)
+
   const cleanHost = host.split(":")[0];
 
   const isRootDomain =
@@ -92,6 +95,8 @@ export async function proxy(request: NextRequest) {
         cache: "no-store",
       }
     );
+
+    console.log("resoponse:", res)
 
     if (res.status === 404) {
       return NextResponse.rewrite(
