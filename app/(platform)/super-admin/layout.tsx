@@ -7,13 +7,18 @@ export default async function SuperAdminLayout({
   children: React.ReactNode;
 }) {
   const cookieStore = cookies();
-  const cookieHeader = cookieStore.toString(); // 👈 send cookies to backend
+
+  // ✅ Convert cookies to proper header string
+  const cookieHeader = (await cookieStore)
+    .getAll()
+    .map(c => `${c.name}=${c.value}`)
+    .join("; ");
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/user/me`,
     {
       headers: {
-        cookie: cookieHeader,
+        Cookie: cookieHeader, // ⚠️ capital C matters
       },
       cache: "no-store",
     }
@@ -23,12 +28,12 @@ export default async function SuperAdminLayout({
     redirect("/login");
   }
 
-    const json = await res.json();
-    const { user, role } = json.data;
+  const json = await res.json();
 
-    if (role !== "super_admin") {
-        redirect("/unauthorized");
-    }
+  const role = json?.data?.role;
+  if (role !== "super_admin") {
+    redirect("/unauthorized");
+  }
 
   return <>{children}</>;
 }
