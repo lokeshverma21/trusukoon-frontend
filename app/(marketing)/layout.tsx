@@ -22,7 +22,7 @@ export function ClientGuard({ children }: { children: React.ReactNode }) {
 
   // Redirect logic
   useEffect(() => {
-    if (!user && pathname.startsWith("/admin")) {
+    if (!user && pathname.startsWith("/admin") || !user && pathname.startsWith("/super-admin")) {
       router.push("/login")
     } else if (user && pathname === "/login" || user && pathname === "/signup") {
       router.push("/")
