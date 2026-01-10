@@ -114,8 +114,9 @@ export async function proxy(request: NextRequest) {
 
   // ✅ Valid tenant → rewrite to tenant routes
   const response = NextResponse.rewrite(
-    new URL(`/(tenant)${pathname}`, request.url)
-  );
+    new URL(pathname, request.url)
+  )
+
 
   response.headers.set("x-tenant-id", subdomain);
   return response;
