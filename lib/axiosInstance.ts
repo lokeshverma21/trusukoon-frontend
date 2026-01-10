@@ -6,6 +6,24 @@ const api = axios.create({
   withCredentials: true, // ✅ so cookies (JWT) are sent automatically
 });
 
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+
+    if (
+      host.endsWith(".lokeshverma.in") &&
+      host !== "lokeshverma.in" &&
+      host !== "www.lokeshverma.in"
+    ) {
+      const subdomain = host.replace(".lokeshverma.in", "");
+      config.headers["x-tenant-subdomain"] = subdomain;
+    }
+  }
+
+  return config;
+});
+
+
 // Optional: Add interceptors for handling token errors or 401s globally
 api.interceptors.response.use(
   (response) => response,

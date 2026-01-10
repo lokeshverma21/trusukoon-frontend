@@ -112,9 +112,17 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-tenant-subdomain", subdomain);
+
   // ✅ Valid tenant → rewrite to tenant routes
   const response = NextResponse.rewrite(
-    new URL(pathname, request.url)
+    new URL(pathname, request.url),
+    {
+      request: {
+        headers: requestHeaders,
+      },
+    }
   )
 
 
