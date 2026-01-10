@@ -75,6 +75,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("https://lokeshverma.in"));
   }
 
+  if (pathname.startsWith("/login") || pathname.startsWith("/signup")) {
+    return NextResponse.next();
+  }
+
   // 🔍 TENANT VALIDATION
   try {
     const res = await fetch(
@@ -91,7 +95,7 @@ export async function proxy(request: NextRequest) {
 
     if (res.status === 404) {
       return NextResponse.rewrite(
-        new URL("/tenant-not-found", request.url)
+        new URL("/not-found", request.url)
       );
     }
 

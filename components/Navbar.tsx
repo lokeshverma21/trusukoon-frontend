@@ -78,14 +78,14 @@ function Navbar() {
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
-
+{/* 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className="text-sm font-medium transition-colors">
                   <Link href={'/book-appointment'}>
                     Book Appointment
                   </Link>
                 </NavigationMenuLink>
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
 
               {/* <NavigationMenuItem>
                 <NavigationMenuTrigger className='hover:bg-primary/40'>About</NavigationMenuTrigger>
@@ -105,13 +105,13 @@ function Navbar() {
                 </NavigationMenuContent>
               </NavigationMenuItem> */}
 
-              <NavigationMenuItem>
+              {/* <NavigationMenuItem>
                 <NavigationMenuLink asChild className="text-sm font-medium transition-colors">
                   <Link href={'/my-appointments'}>
                     My Appointments
                   </Link>
                 </NavigationMenuLink>
-              </NavigationMenuItem>
+              </NavigationMenuItem> */}
             </NavigationMenuList>
           </NavigationMenu>
 
@@ -123,9 +123,9 @@ function Navbar() {
               <Link href={'/login'} className="text-sm px-4 py-2 border border-primary rounded-full text-primary hover:bg-primary hover:text-white transition">
                   Login
                 </Link>
-                <Link href={'/signup'} className="text-sm px-4 py-2 bg-primary text-white rounded-full hover:bg-primary/90 transition">
+                {/* <Link href={'/signup'} className="text-sm px-4 py-2 bg-primary text-white rounded-full hover:bg-primary/90 transition">
                   Get Started
-                </Link>
+                </Link> */}
             </div>
           )
           : (

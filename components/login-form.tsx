@@ -85,13 +85,13 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                 )}
 
                 {/* Signup only on root domain */}
-                {typeof window !== "undefined" &&
+                {/* {typeof window !== "undefined" &&
                   window.location.hostname === "trusukoon.com" && (
                     <FieldDescription className="text-center">
                       Don&apos;t have an account?{" "}
                       <Link href="/signup">Sign up</Link>
                     </FieldDescription>
-                  )}
+                  )} */}
               </Field>
             </FieldGroup>
           </form>
