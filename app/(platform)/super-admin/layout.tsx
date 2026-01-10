@@ -1,13 +1,18 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 export default async function SuperAdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // ✅ cookies() is async in new Next
   const cookieStore = await cookies();
+  const headersList = await headers();
+
+  const host = headersList.get("host"); // 👈 current domain
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+
+  if (!host) redirect("/login");
 
   const cookieHeader = cookieStore
     .getAll()
@@ -15,7 +20,7 @@ export default async function SuperAdminLayout({
     .join("; ");
 
   const res = await fetch(
-    `/api/v1/user/me`,
+    `${protocol}://${host}/api/v1/user/me`,
     {
       headers: {
         Cookie: cookieHeader,
