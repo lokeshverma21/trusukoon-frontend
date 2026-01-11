@@ -4,8 +4,6 @@ import * as React from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import {
   fetchTenants,
-  createTenant,
-  updateTenant,
   deleteTenant,
   toggleTenantStatus,
   selectTenants,
@@ -16,6 +14,7 @@ import {
   TenantStatus,
 } from "@/types/tenant.types";
 import { CreateTenantModal } from "@/components/tenant/AddTenantModal";
+import { EditTenantModal } from "@/components/tenant/EditTenantModal";
 
 type ModalMode = "add" | "edit";
 
@@ -34,7 +33,7 @@ export default function TenantsPage() {
   const dispatch = useAppDispatch();
   const { tenants, loading, error } = useAppSelector(selectTenants);
 
-  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [editModalOpen, setEditModalOpen] = React.useState<boolean>(false);
   const [modalMode, setModalMode] = React.useState<ModalMode>("add");
   const [editing, setEditing] = React.useState<Tenant | null>(null);
   const [createModalOpen, setCreateModalOpen] = React.useState(false);
@@ -83,7 +82,7 @@ export default function TenantsPage() {
   const handleDelete = async (): Promise<void> => {
     if (!editing) return;
     await dispatch(deleteTenant(editing._id)).unwrap();
-    setModalOpen(false);
+    setEditModalOpen(false);
     setEditing(null);
   };
 
@@ -98,7 +97,7 @@ export default function TenantsPage() {
   const openEdit = (tenant: Tenant): void => {
     setModalMode("edit");
     setEditing(tenant);
-    setModalOpen(true);
+    setEditModalOpen(true);
   };
 
 
@@ -218,7 +217,7 @@ export default function TenantsPage() {
                         onClick={() => {
                           setEditing(t);
                           setModalMode("edit");
-                          setModalOpen(true);
+                          setEditModalOpen(true);
                         }}
                         className="border border-red-300 text-red-600 px-2 py-1 rounded"
                       >
@@ -237,6 +236,13 @@ export default function TenantsPage() {
         open={createModalOpen}
         onOpenChange={setCreateModalOpen}
       />
+
+      <EditTenantModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        tenant={editing}
+      />
+
     </div>
   );
 }
