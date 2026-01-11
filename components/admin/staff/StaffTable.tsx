@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import avatar1 from "@/public/assets/avatar-1.jpg";
-import { useAppSelector } from "@/lib/store/hooks";
-import { selectStaffState } from "@/lib/features/staff/staffSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
+import { fetchAllStaff, selectStaffState } from "@/lib/features/staff/staffSlice";
 import { Button } from "@/components/ui/button";
 import { ArrowRightFromLine, Plus } from "lucide-react";
 import AddStaffModal from "./AddStaffModal";
@@ -52,7 +52,11 @@ export interface Staff {
 }
 
 function StaffTable() {
+  const dispatch = useAppDispatch()
   const { staffList } = useAppSelector(selectStaffState);
+  useEffect(() => {
+    dispatch(fetchAllStaff());
+  }, [dispatch]);
 
   return (
     <div className="mt-6">

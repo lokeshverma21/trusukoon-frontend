@@ -238,11 +238,15 @@ export const updateStaffServices = createAsyncThunk<
   "staff/updateStaffServices",
   async ({ id, services }, { rejectWithValue }) => {
     try {
+      console.log("first", id)
+      console.log("second", services)
       const res = await api.patch(
-        `/staff/${id}/services`,
+        `${API_URL}/${id}/services`,
         { services },
         { withCredentials: true }
       );
+
+      console.log("res", res.data)
       return res.data.data as IStaff;
     } catch (err) {
       const error = err as AxiosError<{ message: string }>;
