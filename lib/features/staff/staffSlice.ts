@@ -72,6 +72,16 @@ export interface StaffState {
   successMessage: string | null;
 }
 
+export interface UpdateStaffPayload {
+  id: string;
+  user?: {
+    name?: string;
+    phone?: string;
+    meta?: StaffMeta;
+  };
+  maxAppointmentsPerSlot?: number;
+}
+
 // ===========================================================
 // 🧱 Initial State
 // ===========================================================
@@ -162,17 +172,31 @@ export const fetchStaffById = createAsyncThunk<IStaff, string, { rejectValue: st
 // 🟠 Update staff profile
 export const updateStaff = createAsyncThunk<
   IStaff,
-  { id: string; data: Partial<IStaff> },
+  UpdateStaffPayload,
   { rejectValue: string }
->("staff/updateStaff", async ({ id, data }, { rejectWithValue }) => {
-  try {
-    const res = await api.patch(`${API_URL}/${id}`, data);
-    return res.data.data as IStaff;
-  } catch (err) {
-    const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to update staff.");
+>(
+  "staff/updateStaff",
+  async ({ id, user, maxAppointmentsPerSlot }, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(
+        `${API_URL}/${id}`,
+        {
+          user,
+          maxAppointmentsPerSlot,
+        },
+        { withCredentials: true }
+      );
+
+      return res.data.data as IStaff;
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update staff"
+      );
+    }
   }
-});
+);
+
 
 // 🟡 Update availability
 export const updateAvailability = createAsyncThunk<
@@ -305,9 +329,19 @@ const staffSlice = createSlice({
       })
       .addCase(updateStaff.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.staffList.findIndex((s) => s._id === action.payload._id);
-        if (index !== -1) state.staffList[index] = action.payload;
-        state.successMessage = "Staff profile updated successfully.";
+        state.successMessage = "Staff updated successfully";
+
+        const index = state.staffList.findIndex(
+          (s) => s._id === action.payload._id
+        );
+
+        if (index !== -1) {
+          state.staffList[index] = action.payload;
+        }
+
+        if (state.selectedStaff?._id === action.payload._id) {
+          state.selectedStaff = action.payload;
+        }
       })
       .addCase(updateStaff.rejected, (state, action) => {
         state.loading = false;

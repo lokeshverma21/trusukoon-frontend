@@ -29,6 +29,7 @@ import BreaksModal from "@/components/admin/staff/BreaksModal";
 import PageBreadcrumb from "@/components/admin/PageBreadcrumb";
 import { AddServicesModal } from "@/components/admin/staff/AddServicesModal";
 import { fetchServices } from "@/lib/features/service/serviceSlice";
+import EditStaffModal from "@/components/admin/staff/EditStaffModal";
 
 export default function StaffDetailsPage() {
   const { staffId } = useParams<{ staffId: string }>();
@@ -77,9 +78,7 @@ export default function StaffDetailsPage() {
       {/* ===== HEADER ===== */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-semibold">Staff Details</h1>
-        <Button variant="default" onClick={() => toast.info("Edit feature coming soon!")}>
-          Edit Staff
-        </Button>
+          <EditStaffModal />
       </div>
 
       {/* ===== STAFF PROFILE ===== */}
