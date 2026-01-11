@@ -55,7 +55,7 @@ export function EditTenantModal({
       setForm({
         name: tenant.name,
         slug: tenant.slug,
-        owner: tenant.owner ?? "",
+        owner: tenant.adminName ?? "",
         subscriptionPlan: tenant.subscriptionPlan,
         status: tenant.status,
       });

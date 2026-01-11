@@ -7,10 +7,13 @@ export interface Tenant {
   _id: string;
   name: string;
   slug: string;
-  owner: string | null;
   subscriptionPlan: SubscriptionPlan;
   status: TenantStatus;
   createdAt: string;
+
+  adminName: string | null;
+  adminEmail: string | null;
+  adminPhone: string | null;
 }
 
 export interface CreateTenantPayload {
@@ -25,6 +28,6 @@ export interface CreateTenantPayload {
 export interface UpdateTenantPayload {
   id: string;
   data: Partial<
-    Pick<Tenant, "name" | "slug" | "owner" | "subscriptionPlan" | "status">
+    Pick<Tenant, "name" | "slug" | "adminName" | "subscriptionPlan" | "status" | "adminEmail" | "adminPhone">
   >;
 }

@@ -173,6 +173,8 @@ export default function TenantsPage() {
               <tr>
                 <th className="text-left px-4 py-3">Name</th>
                 <th className="text-left px-4 py-3">Slug</th>
+                <th className="text-left px-4 py-3">Owner</th>
+                <th className="text-left px-4 py-3">Contact</th>
                 <th className="text-left px-4 py-3">Plan</th>
                 <th className="text-left px-4 py-3">Status</th>
                 <th className="text-right px-4 py-3">Actions</th>
@@ -197,6 +199,15 @@ export default function TenantsPage() {
                   <tr key={t._id} className="border-t">
                     <td className="px-4 py-3">{t.name}</td>
                     <td className="px-4 py-3">{t.slug}</td>
+                    <td className="px-4 py-3">{t.adminName}</td>
+                    <td className="px-4 py-3">
+                      <div>
+                        <p>{t.adminPhone}</p>
+                        <p className="text-muted-foreground text-xs">
+                          {t.adminEmail}
+                        </p>
+                      </div>
+                    </td>
                     <td className="px-4 py-3">{t.subscriptionPlan}</td>
                     <td className="px-4 py-3">
                       <button
@@ -213,7 +224,7 @@ export default function TenantsPage() {
                       >
                         Edit
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => {
                           setEditing(t);
                           setModalMode("edit");
@@ -222,7 +233,7 @@ export default function TenantsPage() {
                         className="border border-red-300 text-red-600 px-2 py-1 rounded"
                       >
                         Delete
-                      </button>
+                      </button> */}
                     </td>
                   </tr>
                 ))
