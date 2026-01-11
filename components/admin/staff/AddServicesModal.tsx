@@ -10,6 +10,7 @@ import {
   updateStaff,
   IStaff,
   IService,
+  updateStaffServices,
 } from "@/lib/features/staff/staffSlice";
 import { toast } from "sonner";
 import {
@@ -85,9 +86,12 @@ export const AddServicesModal: React.FC<AddServicesModalProps> = ({
     try {
       const serviceIds = data.services.map((s) => s.serviceId);
 
-      //as unknown as IService[] tells TypeScript:
-      //“I know what I’m doing — this data shape will work with the backend.”
-      await dispatch(updateStaff({ id: staffId, data: { services: serviceIds as unknown as IService[] } })).unwrap();
+      await dispatch(
+        updateStaffServices({
+          id: staffId,
+          services: serviceIds,
+        })
+      ).unwrap();
 
       toast.success("Services updated successfully!");
       setOpen(false);
@@ -97,6 +101,7 @@ export const AddServicesModal: React.FC<AddServicesModalProps> = ({
       );
     }
   };
+
 
   if (allServices.length === 0)
   return <p className="text-sm text-muted-foreground">No services available.</p>

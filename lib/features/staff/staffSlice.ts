@@ -229,6 +229,31 @@ export const updateBreaks = createAsyncThunk<
   }
 });
 
+//update services of staff
+export const updateStaffServices = createAsyncThunk<
+  IStaff,
+  { id: string; services: string[] },
+  { rejectValue: string }
+>(
+  "staff/updateStaffServices",
+  async ({ id, services }, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(
+        `/staff/${id}/services`,
+        { services },
+        { withCredentials: true }
+      );
+      return res.data.data as IStaff;
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update services"
+      );
+    }
+  }
+);
+
+
 // ⚫ Delete staff
 export const deleteStaff = createAsyncThunk<
   string,
