@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { z } from "zod";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { updateTenant, deleteTenant } from "@/lib/features/tenant/tenantSlice";
 import {
@@ -9,18 +10,28 @@ import {
   TenantStatus,
 } from "@/types/tenant.types";
 
+/* ================= ZOD SCHEMA ================= */
+
+const tenantSchema = z.object({
+  name: z.string().min(1, "Tenant name is required"),
+  slug: z
+    .string()
+    .min(1, "Slug is required")
+    .regex(
+      /^[a-z0-9-]+$/,
+      "Slug can only contain lowercase letters, numbers, and hyphens"
+    ),
+  owner: z.string().optional(),
+  subscriptionPlan: z.enum(["free", "paid"]),
+  status: z.enum(["active", "inactive"]),
+});
+
+type FormState = z.infer<typeof tenantSchema>;
+
 interface EditTenantModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   tenant: Tenant | null;
-}
-
-interface FormState {
-  name: string;
-  slug: string;
-  owner: string;
-  subscriptionPlan: SubscriptionPlan;
-  status: TenantStatus;
 }
 
 export function EditTenantModal({
@@ -31,10 +42,14 @@ export function EditTenantModal({
   const dispatch = useAppDispatch();
 
   const [form, setForm] = React.useState<FormState | null>(null);
+  const [errors, setErrors] = React.useState<
+    Partial<Record<keyof FormState, string>>
+  >({});
   const [submitting, setSubmitting] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [rootError, setRootError] = React.useState<string | null>(null);
 
-  // Populate form when modal opens
+  /* ============== INIT FORM ============== */
+
   React.useEffect(() => {
     if (tenant && open) {
       setForm({
@@ -44,36 +59,42 @@ export function EditTenantModal({
         subscriptionPlan: tenant.subscriptionPlan,
         status: tenant.status,
       });
-      setError(null);
+      setErrors({});
+      setRootError(null);
     }
   }, [tenant, open]);
 
   if (!open || !form || !tenant) return null;
 
-  const updateField = (
-    key: keyof FormState,
-    value: string
+  /* ============== HELPERS ============== */
+
+  const updateField = <K extends keyof FormState>(
+    key: K,
+    value: FormState[K]
   ) => {
     setForm((prev) =>
       prev ? { ...prev, [key]: value } : prev
     );
+    setErrors((prev) => ({ ...prev, [key]: undefined }));
   };
 
   const validate = (): boolean => {
-    if (!form.name.trim()) {
-      setError("Tenant name is required");
+    const result = tenantSchema.safeParse(form);
+
+    if (!result.success) {
+      const fieldErrors: typeof errors = {};
+     result.error.issues.forEach((issue) => {
+        const key = issue.path[0] as keyof FormState;
+        fieldErrors[key] = issue.message;
+    });
+      setErrors(fieldErrors);
       return false;
     }
-    if (!form.slug.trim()) {
-      setError("Slug is required");
-      return false;
-    }
-    if (!/^[a-z0-9-]+$/.test(form.slug)) {
-      setError("Slug can only contain lowercase letters, numbers, and hyphens");
-      return false;
-    }
+
     return true;
   };
+
+  /* ============== ACTIONS ============== */
 
   const handleSubmit = async () => {
     if (!validate()) return;
@@ -86,10 +107,9 @@ export function EditTenantModal({
           data: form,
         })
       ).unwrap();
-
       onOpenChange(false);
     } catch (err) {
-      setError(
+      setRootError(
         typeof err === "string" ? err : "Update failed"
       );
     } finally {
@@ -105,11 +125,13 @@ export function EditTenantModal({
       await dispatch(deleteTenant(tenant._id)).unwrap();
       onOpenChange(false);
     } catch {
-      setError("Delete failed");
+      setRootError("Delete failed");
     } finally {
       setSubmitting(false);
     }
   };
+
+  /* ============== UI ============== */
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -121,67 +143,107 @@ export function EditTenantModal({
           </p>
         </header>
 
-        {error && (
+        {rootError && (
           <div className="text-sm text-red-600">
-            {error}
+            {rootError}
           </div>
         )}
 
         <div className="space-y-3">
-          <input
-            value={form.name}
-            onChange={(e) =>
-              updateField("name", e.target.value)
-            }
-            placeholder="Tenant name"
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-          />
+          {/* Tenant Name */}
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">
+              Tenant Name
+            </label>
+            <input
+              value={form.name}
+              onChange={(e) =>
+                updateField("name", e.target.value)
+              }
+              className="w-full border rounded-lg px-3 py-2 text-sm"
+            />
+            {errors.name && (
+              <p className="text-xs text-red-600 mt-1">
+                {errors.name}
+              </p>
+            )}
+          </div>
 
-          <input
-            value={form.slug}
-            onChange={(e) =>
-              updateField(
-                "slug",
-                e.target.value.toLowerCase()
-              )
-            }
-            placeholder="tenant-slug"
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-          />
+          {/* Slug */}
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">
+              Slug
+            </label>
+            <input
+              value={form.slug}
+              onChange={(e) =>
+                updateField(
+                  "slug",
+                  e.target.value.toLowerCase()
+                )
+              }
+              className="w-full border rounded-lg px-3 py-2 text-sm"
+            />
+            {errors.slug && (
+              <p className="text-xs text-red-600 mt-1">
+                {errors.slug}
+              </p>
+            )}
+          </div>
 
-          <input
-            value={form.owner}
-            onChange={(e) =>
-              updateField("owner", e.target.value)
-            }
-            placeholder="Owner name"
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-          />
+          {/* Owner */}
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">
+              Owner
+            </label>
+            <input
+              value={form.owner ?? ""}
+              onChange={(e) =>
+                updateField("owner", e.target.value)
+              }
+              className="w-full border rounded-lg px-3 py-2 text-sm"
+            />
+          </div>
 
-          <select
-            value={form.subscriptionPlan}
-            onChange={(e) =>
-              updateField(
-                "subscriptionPlan",
-                e.target.value
-              )
-            }
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-          >
-            <option value="free">Free</option>
-            <option value="paid">Paid</option>
-          </select>
+          {/* Plan */}
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">
+              Subscription Plan
+            </label>
+            <select
+              value={form.subscriptionPlan}
+              onChange={(e) =>
+                updateField(
+                  "subscriptionPlan",
+                  e.target.value as SubscriptionPlan
+                )
+              }
+              className="w-full border rounded-lg px-3 py-2 text-sm"
+            >
+              <option value="free">Free</option>
+              <option value="paid">Paid</option>
+            </select>
+          </div>
 
-          <select
-            value={form.status}
-            onChange={(e) =>
-              updateField("status", e.target.value)
-            }
-            className="w-full border rounded-lg px-3 py-2 text-sm"
-          >
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
+          {/* Status */}
+          <div>
+            <label className="block text-xs font-medium text-slate-600 mb-1">
+              Status
+            </label>
+            <select
+              value={form.status}
+              onChange={(e) =>
+                updateField(
+                  "status",
+                  e.target.value as TenantStatus
+                )
+              }
+              className="w-full border rounded-lg px-3 py-2 text-sm"
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
         </div>
 
         <footer className="flex justify-between pt-4">
