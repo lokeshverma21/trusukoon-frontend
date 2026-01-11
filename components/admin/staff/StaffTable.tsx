@@ -54,9 +54,9 @@ export interface Staff {
 function StaffTable() {
   const dispatch = useAppDispatch()
   const { staffList } = useAppSelector(selectStaffState);
-  useEffect(() => {
-    dispatch(fetchAllStaff());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchAllStaff());
+  // }, [dispatch]);
 
   return (
     <div className="mt-6">
