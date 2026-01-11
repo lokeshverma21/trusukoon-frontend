@@ -14,9 +14,36 @@ export interface IUser {
   name: string;
   email: string;
   phone: string;
-  role: string;
+  role: "staff";
   avatarUrl?: string;
+  timezone?: string;
+  meta?: StaffMeta;
 }
+
+export interface IStaff {
+  _id: string;
+  user: IUser;
+  services: IService[];
+  availability: IAvailabilitySlot[];
+  breaks: IBreakSlot[];
+  maxAppointmentsPerSlot: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateStaffResponse {
+  user: IUser;
+  staff: IStaff;
+}
+
+export interface StaffMeta {
+  specialties?: string[];
+  qualifications?: string[];
+  experienceYears?: number;
+  bio?: string;
+  notes?: string;
+}
+
 
 export interface IService {
   _id: string;
@@ -35,17 +62,6 @@ export interface IBreakSlot {
   date?: string;   // Optional specific date
   start: string;
   end: string;
-}
-
-export interface IStaff {
-  _id: string;
-  user: IUser;
-  services: IService[];
-  availability: IAvailabilitySlot[];
-  breaks: IBreakSlot[];
-  maxAppointmentsPerSlot: number;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface StaffState {
@@ -73,22 +89,28 @@ const initialState: StaffState = {
 
 // 🟢 Create new staff
 export const createStaff = createAsyncThunk<
-  IStaff,
+  CreateStaffResponse,
   {
-    userId: string;
-    services?: string[];
-    availability?: IAvailabilitySlot[];
-    breaks?: IBreakSlot[];
-    maxAppointmentsPerSlot?: number;
+    name: string;
+    email: string;
+    phone: string;
+    password: string;
+    timezone?: string;
+    meta?: StaffMeta;
   },
   { rejectValue: string }
->("staff/createStaff", async (data, { rejectWithValue }) => {
+>("staff/createStaff", async (payload, { rejectWithValue }) => {
   try {
-    const res = await api.post(`${API_URL}`, data, { withCredentials: true });
-    return res.data.data as IStaff;
+    const res = await api.post(API_URL, payload, {
+      withCredentials: true,
+    });
+
+    return res.data.data as CreateStaffResponse;
   } catch (err) {
     const error = err as AxiosError<{ message: string }>;
-    return rejectWithValue(error.response?.data?.message || "Failed to create staff.");
+    return rejectWithValue(
+      error.response?.data?.message || "Failed to create staff"
+    );
   }
 });
 
@@ -220,11 +242,14 @@ const staffSlice = createSlice({
         state.error = null;
         state.successMessage = null;
       })
-      .addCase(createStaff.fulfilled, (state, action) => {
-        state.loading = false;
-        state.staffList.push(action.payload);
-        state.successMessage = "Staff profile created successfully.";
-      })
+      .addCase(
+        createStaff.fulfilled,
+        (state, action: PayloadAction<CreateStaffResponse>) => {
+          state.loading = false;
+          state.staffList.push(action.payload.staff);
+          state.successMessage = "Staff created successfully";
+        }
+      )
       .addCase(createStaff.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to create staff.";

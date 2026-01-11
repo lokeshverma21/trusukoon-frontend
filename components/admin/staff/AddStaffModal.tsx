@@ -4,8 +4,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { toast } from "sonner";
+import { Plus } from "lucide-react";
 
 import {
   Dialog,
@@ -24,25 +24,39 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useAppDispatch } from "@/lib/store/hooks";
-import { registerUser } from "../../../lib/features/auth/authSlice";
-import { Plus } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
-// ✅ Zod Schema for form validation
+import { useAppDispatch } from "@/lib/store/hooks";
+import { createStaff } from "@/lib/features/staff/staffSlice";
+
 const addStaffSchema = z.object({
   name: z.string().min(2, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  role: z.enum(["staff", "admin"]),
+  email: z.string().email("Invalid email"),
+  phone: z
+    .string()
+    .regex(/^[0-9]{10}$/, "Phone must be 10 digits"),
+  password: z.string().min(6, "Minimum 6 characters"),
   timezone: z.string().optional(),
+
+  meta: z
+    .object({
+      specialties: z.array(z.string().min(1)).optional(),
+      qualifications: z.array(z.string().min(1)).optional(),
+      experienceYears: z
+        .number()
+        .min(0, "Invalid experience")
+        .optional(),
+      bio: z.string().max(500).optional(),
+      notes: z.string().max(500).optional(),
+    })
+    .optional(),
 });
+
 
 type AddStaffFormData = z.infer<typeof addStaffSchema>;
 
-const AddStaffModal: React.FC = () => {
-  const dispatch = useAppDispatch()
+const AddStaffModal = () => {
+  const dispatch = useAppDispatch();
   const [open, setOpen] = React.useState(false);
 
   const form = useForm<AddStaffFormData>({
@@ -52,131 +66,122 @@ const AddStaffModal: React.FC = () => {
       email: "",
       phone: "",
       password: "",
-      role: "staff",
-      timezone: "UTC",
+      timezone: "Asia/Kolkata",
+      meta: {
+        specialties: [],
+        qualifications: [],
+        experienceYears: undefined,
+        bio: "",
+        notes: "",
+      },
     },
   });
 
-  const onSubmit = async (values: AddStaffFormData) => {      
-      dispatch(registerUser(values))
+  const onSubmit = async (values: AddStaffFormData) => {
+    const payload = {
+      ...values,
+      meta: {
+        ...values.meta,
+        specialties: values.meta?.specialties?.filter(Boolean),
+        qualifications: values.meta?.qualifications?.filter(Boolean),
+      },
+    };
+
+    const res = await dispatch(createStaff(payload));
+
+    if (createStaff.fulfilled.match(res)) {
+      toast.success("Staff created successfully");
+      setOpen(false);
+      form.reset();
+    } else {
+      toast.error(res.payload as string);
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button><Plus />Add Staff</Button>
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
+          Add Staff
+        </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Add New Staff</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Name */}
+            <FormField name="name" control={form.control} render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl><Input {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField name="email" control={form.control} render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl><Input {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField name="phone" control={form.control} render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone</FormLabel>
+                <FormControl><Input {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            <FormField name="password" control={form.control} render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl><Input type="password" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )} />
+
+            {/* Meta fields */}
             <FormField
+              name="meta.experienceYears"
               control={form.control}
-              name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Experience (Years)</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter full name" {...field} />
+                    <Input
+                      type="number"
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === "" ? undefined : Number(e.target.value)
+                        )
+                      }
+                    />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Email */}
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter email address" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField name="meta.bio" control={form.control} render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bio</FormLabel>
+                <FormControl><Textarea {...field} /></FormControl>
+              </FormItem>
+            )} />
 
-            {/* Phone */}
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter phone number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField name="meta.notes" control={form.control} render={({ field }) => (
+              <FormItem>
+                <FormLabel>Internal Notes</FormLabel>
+                <FormControl><Textarea {...field} /></FormControl>
+              </FormItem>
+            )} />
 
-            {/* Password */}
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" placeholder="Enter password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Role */}
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="staff">Staff</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Timezone */}
-            {/* <FormField
-              control={form.control}
-              name="timezone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Timezone</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Asia/Kolkata" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
-
-            {/* Submit */}
-            <div className="pt-2 flex justify-end">
+            <div className="flex justify-end pt-2">
               <Button type="submit">Create Staff</Button>
             </div>
           </form>
