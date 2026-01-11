@@ -29,9 +29,9 @@ export const fetchServices = createAsyncThunk<
   { rejectValue: string }
 >("services/fetchAll", async (params, { rejectWithValue }) => {
   try {
-    const { search, active, page = 1, limit = 20, isAdmin=false } = params || {};
+    const { search, active, page = 1, limit = 20 } = params || {};
     // ✅ Choose correct endpoint based on role
-    const endpoint = isAdmin ? "/service/admin" : "/service";
+    const endpoint = "/service";
     const response = await api.get(endpoint, {
       params: { search, active, page, limit },
     });
