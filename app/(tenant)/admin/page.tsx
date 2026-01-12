@@ -120,5 +120,5 @@ const AdminDashboardPage = () => {
   );
 };
 
-export default withRoleGuard(AdminDashboardPage,["admin"]);
+export default withRoleGuard(AdminDashboardPage,["admin","staff"]);
 
